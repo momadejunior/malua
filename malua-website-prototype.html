@@ -1,0 +1,1803 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MALUA — Cooperativa de Poupança e Crédito</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #782423;
+    --navy: #00244c;
+    --red-light: #9a3130;
+    --navy-light: #003a7a;
+    --cream: #f8f4ef;
+    --warm-white: #fdfaf7;
+    --gold: #c9a84c;
+    --text: #1a1a2e;
+    --muted: #6b7280;
+    --border: rgba(0,36,76,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--warm-white);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ─── PAGE SYSTEM ─── */
+  .page { display: none; min-height: 100vh; }
+  .page.active { display: block; }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: rgba(253,250,247,0.97);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    height: 72px;
+    display: flex; align-items: center; justify-content: space-between;
+    transition: box-shadow 0.3s;
+  }
+  nav.scrolled { box-shadow: 0 4px 30px rgba(0,36,76,0.08); }
+
+  .nav-logo {
+    display: flex; align-items: center; gap: 12px; cursor: pointer;
+    text-decoration: none;
+  }
+  .nav-logo-mark {
+    width: 40px; height: 40px;
+    background: var(--navy);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 20px; font-weight: 900;
+    color: white; letter-spacing: -1px;
+    position: relative; overflow: hidden;
+  }
+  .nav-logo-mark::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 4px; background: var(--red);
+  }
+  .nav-logo-text { line-height: 1.1; }
+  .nav-logo-text span:first-child {
+    display: block;
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px; font-weight: 400;
+    color: var(--navy); letter-spacing: 0.5px;
+  }
+  .nav-logo-text span:last-child {
+    display: block; font-size: 10px; color: var(--muted);
+    letter-spacing: 0.8px; text-transform: uppercase;
+  }
+
+  .nav-links {
+    display: flex; align-items: center; gap: 4px; list-style: none;
+  }
+  .nav-links a {
+    display: block; padding: 8px 14px;
+    font-size: 13.5px; font-weight: 500;
+    color: var(--navy); text-decoration: none;
+    border-radius: 6px; transition: all 0.2s;
+    letter-spacing: 0.2px;
+  }
+  .nav-links a:hover { background: rgba(0,36,76,0.06); }
+  .nav-links a.active { color: var(--red); background: rgba(120,36,35,0.06); }
+
+  .nav-actions { display: flex; align-items: center; gap: 10px; }
+  .btn-search {
+    width: 36px; height: 36px; border: none; background: transparent;
+    cursor: pointer; border-radius: 8px; color: var(--navy);
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+  }
+  .btn-search:hover { background: rgba(0,36,76,0.06); }
+  .btn-area-privada {
+    padding: 9px 20px;
+    background: var(--navy); color: white;
+    border: none; border-radius: 8px; cursor: pointer;
+    font-size: 13px; font-weight: 600; font-family: 'DM Sans', sans-serif;
+    transition: background 0.2s; text-decoration: none; display: block;
+  }
+  .btn-area-privada:hover { background: var(--navy-light); }
+
+  /* ─── HERO HOME ─── */
+  .hero {
+    min-height: 100vh;
+    display: grid; grid-template-columns: 1fr 1fr;
+    padding-top: 72px; overflow: hidden;
+  }
+  .hero-left {
+    display: flex; flex-direction: column;
+    justify-content: center; padding: 80px 60px 80px 80px;
+    position: relative; z-index: 2;
+  }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(120,36,35,0.08); color: var(--red);
+    padding: 6px 14px; border-radius: 20px;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.8px;
+    text-transform: uppercase; margin-bottom: 28px; width: fit-content;
+  }
+  .hero-tag::before {
+    content: ''; width: 6px; height: 6px; background: var(--red);
+    border-radius: 50%; animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.5); }
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(42px, 5vw, 62px);
+    font-weight: 400; line-height: 1.12;
+    color: var(--navy); margin-bottom: 24px;
+    letter-spacing: -0.5px;
+  }
+  .hero h1 em {
+    font-style: italic; color: var(--red);
+  }
+  .hero p {
+    font-size: 17px; line-height: 1.7; color: #4b5563;
+    max-width: 420px; margin-bottom: 40px;
+  }
+  .hero-actions { display: flex; gap: 14px; align-items: center; }
+  .btn-primary {
+    padding: 14px 28px; background: var(--navy); color: white;
+    border: none; border-radius: 10px; cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 600;
+    transition: all 0.2s; text-decoration: none; display: inline-block;
+  }
+  .btn-primary:hover { background: var(--navy-light); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,36,76,0.2); }
+  .btn-secondary {
+    padding: 14px 28px; background: transparent; color: var(--navy);
+    border: 1.5px solid rgba(0,36,76,0.25); border-radius: 10px; cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 500;
+    transition: all 0.2s; text-decoration: none; display: inline-block;
+  }
+  .btn-secondary:hover { border-color: var(--navy); background: rgba(0,36,76,0.04); }
+
+  .hero-stats {
+    display: flex; gap: 40px; margin-top: 56px;
+    padding-top: 40px; border-top: 1px solid var(--border);
+  }
+  .stat-item { text-align: left; }
+  .stat-number {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px; color: var(--navy); line-height: 1;
+  }
+  .stat-number span { color: var(--red); }
+  .stat-label { font-size: 12px; color: var(--muted); margin-top: 4px; letter-spacing: 0.3px; }
+
+  .hero-right {
+    background: var(--navy);
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hero-right::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--navy) 0%, #001833 100%);
+  }
+  .hero-pattern {
+    position: absolute; inset: 0;
+    opacity: 0.06;
+    background-image: repeating-linear-gradient(
+      45deg, white 0, white 1px, transparent 0, transparent 50%);
+    background-size: 20px 20px;
+  }
+  .hero-card-stack {
+    position: relative; z-index: 2;
+    width: 340px;
+  }
+  .bank-card {
+    width: 100%; aspect-ratio: 1.586/1;
+    border-radius: 16px;
+    padding: 24px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    font-family: 'DM Mono', 'Courier New', monospace;
+  }
+  .bank-card.card-main {
+    background: linear-gradient(135deg, var(--red) 0%, #5a1b1a 100%);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+    color: white;
+  }
+  .bank-card.card-back {
+    background: linear-gradient(135deg, #1a3a6e 0%, #0f2347 100%);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    color: white; transform: translateY(20px) translateX(-16px) rotate(-3deg);
+    position: absolute; bottom: -40px; right: -20px; width: 90%;
+  }
+  .card-chip {
+    width: 38px; height: 28px;
+    background: linear-gradient(135deg, var(--gold) 0%, #a8871f 100%);
+    border-radius: 6px;
+  }
+  .card-logo-small {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px; font-weight: 900; letter-spacing: -0.5px;
+  }
+  .card-number { font-size: 14px; letter-spacing: 2px; opacity: 0.85; }
+  .card-footer { display: flex; justify-content: space-between; align-items: flex-end; }
+  .card-name { font-size: 11px; letter-spacing: 1px; opacity: 0.8; }
+
+  /* ─── SECTIONS ─── */
+  .section { padding: 100px 80px; }
+  .section-sm { padding: 60px 80px; }
+  .section-tag {
+    display: inline-block; font-size: 11px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--red); margin-bottom: 16px;
+  }
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(32px, 4vw, 48px); font-weight: 400;
+    color: var(--navy); line-height: 1.15; letter-spacing: -0.3px;
+    margin-bottom: 16px;
+  }
+  .section-title em { font-style: italic; }
+  .section-subtitle {
+    font-size: 17px; color: var(--muted); line-height: 1.7;
+    max-width: 560px;
+  }
+  .section-header { margin-bottom: 56px; }
+  .section-header.centered { text-align: center; }
+  .section-header.centered .section-subtitle { margin: 0 auto; }
+
+  /* ─── SERVICES GRID ─── */
+  .services-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  }
+  .service-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px; padding: 32px;
+    transition: all 0.3s; cursor: pointer;
+    position: relative; overflow: hidden;
+  }
+  .service-card::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+    background: var(--navy); transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .service-card:hover::before { transform: scaleX(1); }
+  .service-card:hover { box-shadow: 0 16px 48px rgba(0,36,76,0.1); transform: translateY(-4px); }
+  .service-icon {
+    width: 52px; height: 52px; border-radius: 14px;
+    background: rgba(0,36,76,0.06); color: var(--navy);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; margin-bottom: 20px;
+  }
+  .service-card h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px; color: var(--navy);
+    margin-bottom: 10px; font-weight: 400;
+  }
+  .service-card p { font-size: 14.5px; color: var(--muted); line-height: 1.6; }
+  .service-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--red); font-size: 13.5px; font-weight: 600;
+    margin-top: 20px; text-decoration: none;
+    transition: gap 0.2s;
+  }
+  .service-link:hover { gap: 10px; }
+
+  /* ─── NEWS GRID ─── */
+  .news-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 24px; }
+  .news-card {
+    background: white; border: 1px solid var(--border);
+    border-radius: 16px; overflow: hidden;
+    transition: box-shadow 0.3s, transform 0.3s; cursor: pointer;
+  }
+  .news-card:hover { box-shadow: 0 16px 48px rgba(0,36,76,0.1); transform: translateY(-4px); }
+  .news-image {
+    width: 100%; aspect-ratio: 16/9;
+    background: var(--navy);
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .news-image.red-bg { background: var(--red); }
+  .news-image-icon { font-size: 48px; opacity: 0.3; }
+  .news-image-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 60%);
+  }
+  .news-category {
+    position: absolute; top: 14px; left: 14px;
+    background: var(--red); color: white;
+    font-size: 10px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; padding: 4px 10px; border-radius: 20px;
+  }
+  .news-body { padding: 22px; }
+  .news-date { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+  .news-body h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px; font-weight: 400; color: var(--navy);
+    line-height: 1.3; margin-bottom: 10px;
+  }
+  .news-body p { font-size: 13.5px; color: var(--muted); line-height: 1.6; }
+
+  /* ─── PAGE HEADER ─── */
+  .page-header {
+    background: var(--navy); padding: 120px 80px 64px;
+    position: relative; overflow: hidden;
+  }
+  .page-header::after {
+    content: ''; position: absolute;
+    bottom: 0; left: 0; right: 0; height: 80px;
+    background: var(--warm-white);
+    clip-path: ellipse(55% 100% at 50% 100%);
+  }
+  .page-header-pattern {
+    position: absolute; inset: 0; opacity: 0.04;
+    background-image: repeating-linear-gradient(
+      45deg, white 0, white 1px, transparent 0, transparent 50%);
+    background-size: 24px 24px;
+  }
+  .page-header-inner { position: relative; z-index: 2; }
+  .breadcrumb {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: rgba(255,255,255,0.5);
+    margin-bottom: 20px; letter-spacing: 0.3px;
+  }
+  .breadcrumb span { color: rgba(255,255,255,0.8); }
+  .breadcrumb a { color: rgba(255,255,255,0.5); text-decoration: none; cursor: pointer; }
+  .breadcrumb a:hover { color: rgba(255,255,255,0.8); }
+  .page-header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(36px, 5vw, 56px); font-weight: 400;
+    color: white; line-height: 1.1; letter-spacing: -0.5px;
+  }
+  .page-header h1 em { font-style: italic; color: rgba(201,168,76,0.9); }
+  .page-header p {
+    font-size: 17px; color: rgba(255,255,255,0.65);
+    line-height: 1.7; max-width: 600px; margin-top: 16px;
+  }
+
+  /* ─── INSTITUCIONAL ─── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .feature-list { list-style: none; margin-top: 24px; }
+  .feature-list li {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 14px 0; border-bottom: 1px solid var(--border);
+    font-size: 15px; color: #374151; line-height: 1.5;
+  }
+  .feature-list li::before {
+    content: '✓'; width: 22px; height: 22px;
+    background: rgba(120,36,35,0.1); color: var(--red);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  .values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 40px; }
+  .value-card {
+    background: white; border: 1px solid var(--border); border-radius: 14px;
+    padding: 28px; text-align: center;
+  }
+  .value-icon { font-size: 32px; margin-bottom: 12px; }
+  .value-card h4 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px; color: var(--navy); margin-bottom: 8px; font-weight: 400;
+  }
+  .value-card p { font-size: 13.5px; color: var(--muted); line-height: 1.6; }
+
+  /* ─── SERVIÇOS FULL ─── */
+  .services-full-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .service-full-card {
+    background: white; border: 1px solid var(--border); border-radius: 16px;
+    padding: 36px; display: flex; gap: 24px;
+    transition: all 0.3s; cursor: pointer;
+  }
+  .service-full-card:hover { box-shadow: 0 16px 48px rgba(0,36,76,0.08); transform: translateY(-2px); }
+  .service-full-icon {
+    width: 60px; height: 60px; border-radius: 16px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 26px;
+  }
+  .icon-navy { background: rgba(0,36,76,0.07); }
+  .icon-red { background: rgba(120,36,35,0.07); }
+  .service-full-body h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 21px; color: var(--navy); font-weight: 400; margin-bottom: 8px;
+  }
+  .service-full-body p { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 14px; }
+  .service-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tag {
+    padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500;
+    background: rgba(0,36,76,0.06); color: var(--navy);
+  }
+  .tag.red { background: rgba(120,36,35,0.07); color: var(--red); }
+
+  /* ─── DOCUMENTOS ─── */
+  .doc-filters {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 32px;
+  }
+  .filter-btn {
+    padding: 8px 18px; border-radius: 20px; border: 1px solid var(--border);
+    background: white; color: var(--navy); font-size: 13px; font-weight: 500;
+    cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+  }
+  .filter-btn.active { background: var(--navy); color: white; border-color: var(--navy); }
+  .filter-btn:hover:not(.active) { border-color: var(--navy); background: rgba(0,36,76,0.04); }
+
+  .docs-list { display: flex; flex-direction: column; gap: 12px; }
+  .doc-item {
+    background: white; border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px 24px; display: flex; align-items: center; gap: 20px;
+    transition: all 0.2s; cursor: pointer;
+  }
+  .doc-item:hover { box-shadow: 0 8px 24px rgba(0,36,76,0.08); border-color: rgba(0,36,76,0.2); }
+  .doc-type {
+    width: 48px; height: 48px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 800; letter-spacing: 0.5px; flex-shrink: 0;
+  }
+  .doc-type.pdf { background: rgba(220,38,38,0.1); color: #dc2626; }
+  .doc-type.xlsx { background: rgba(21,128,61,0.1); color: #15803d; }
+  .doc-type.docx { background: rgba(37,99,235,0.1); color: #2563eb; }
+  .doc-info { flex: 1; }
+  .doc-info h4 { font-size: 15px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+  .doc-info p { font-size: 12.5px; color: var(--muted); }
+  .doc-meta { text-align: right; }
+  .doc-date { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  .doc-size { font-size: 11px; color: var(--muted); }
+  .btn-download {
+    padding: 8px 16px; background: rgba(0,36,76,0.07); color: var(--navy);
+    border: none; border-radius: 8px; cursor: pointer; font-size: 13px;
+    font-weight: 600; font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+  }
+  .btn-download:hover { background: var(--navy); color: white; }
+
+  /* ─── CONTACTO ─── */
+  .contact-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 60px; }
+  .contact-info { display: flex; flex-direction: column; gap: 28px; }
+  .contact-card {
+    background: white; border: 1px solid var(--border); border-radius: 14px;
+    padding: 24px; display: flex; gap: 18px; align-items: flex-start;
+  }
+  .contact-icon {
+    width: 46px; height: 46px; border-radius: 12px; flex-shrink: 0;
+    background: rgba(0,36,76,0.07); display: flex; align-items: center;
+    justify-content: center; font-size: 20px;
+  }
+  .contact-card h4 { font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+  .contact-card p { font-size: 14px; color: var(--muted); line-height: 1.5; }
+
+  .form-group { margin-bottom: 20px; }
+  label { display: block; font-size: 13.5px; font-weight: 600; color: var(--navy); margin-bottom: 7px; }
+  input, select, textarea {
+    width: 100%; padding: 12px 16px;
+    border: 1.5px solid var(--border); border-radius: 10px;
+    font-family: 'DM Sans', sans-serif; font-size: 15px;
+    color: var(--text); background: white;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--navy);
+    box-shadow: 0 0 0 3px rgba(0,36,76,0.08);
+  }
+  textarea { resize: vertical; min-height: 120px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .btn-submit {
+    width: 100%; padding: 15px; background: var(--navy); color: white;
+    border: none; border-radius: 10px; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600;
+    transition: all 0.2s;
+  }
+  .btn-submit:hover { background: var(--navy-light); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,36,76,0.2); }
+
+  /* ─── FAQ ─── */
+  .faq-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 60px; }
+  .faq-categories { display: flex; flex-direction: column; gap: 8px; position: sticky; top: 100px; }
+  .faq-cat-btn {
+    padding: 12px 18px; border-radius: 10px; border: 1px solid var(--border);
+    background: white; text-align: left; cursor: pointer;
+    font-size: 14px; font-weight: 500; color: var(--navy);
+    font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+  }
+  .faq-cat-btn.active { background: var(--navy); color: white; border-color: var(--navy); }
+  .faq-cat-btn:hover:not(.active) { background: rgba(0,36,76,0.04); }
+
+  .faq-list { display: flex; flex-direction: column; gap: 12px; }
+  .faq-item {
+    background: white; border: 1px solid var(--border); border-radius: 14px;
+    overflow: hidden; transition: box-shadow 0.2s;
+  }
+  .faq-item:hover { box-shadow: 0 4px 16px rgba(0,36,76,0.07); }
+  .faq-question {
+    padding: 22px 24px; cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 15px; font-weight: 600; color: var(--navy);
+  }
+  .faq-toggle {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: rgba(0,36,76,0.07); display: flex; align-items: center; justify-content: center;
+    font-size: 18px; color: var(--navy); flex-shrink: 0;
+    transition: all 0.2s; font-weight: 300;
+  }
+  .faq-item.open .faq-toggle { background: var(--navy); color: white; transform: rotate(45deg); }
+  .faq-answer {
+    display: none; padding: 0 24px 22px;
+    font-size: 14.5px; color: var(--muted); line-height: 1.7;
+  }
+  .faq-item.open .faq-answer { display: block; }
+
+  /* ─── SIMULADORES ─── */
+  .sim-tabs { display: flex; gap: 4px; background: rgba(0,36,76,0.06); padding: 4px; border-radius: 12px; margin-bottom: 40px; width: fit-content; }
+  .sim-tab {
+    padding: 10px 22px; border-radius: 9px; border: none; background: transparent;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+    color: var(--navy); cursor: pointer; transition: all 0.2s;
+  }
+  .sim-tab.active { background: white; box-shadow: 0 2px 8px rgba(0,36,76,0.12); color: var(--navy); }
+  .sim-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  .sim-form { background: white; border: 1px solid var(--border); border-radius: 20px; padding: 36px; }
+  .sim-form h3 {
+    font-family: 'DM Serif Display', serif; font-size: 24px;
+    color: var(--navy); font-weight: 400; margin-bottom: 28px;
+  }
+  .range-input { width: 100%; margin-top: 8px; appearance: none; height: 4px; border-radius: 2px; background: rgba(0,36,76,0.15); outline: none; }
+  .range-input::-webkit-slider-thumb {
+    appearance: none; width: 20px; height: 20px;
+    border-radius: 50%; background: var(--navy); cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,36,76,0.3);
+  }
+  .range-labels { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .sim-result { background: var(--navy); border-radius: 20px; padding: 36px; color: white; }
+  .sim-result h3 { font-family: 'DM Serif Display', serif; font-size: 24px; font-weight: 400; margin-bottom: 28px; color: white; }
+  .result-amount { font-family: 'DM Serif Display', serif; font-size: 48px; color: var(--gold); margin-bottom: 8px; }
+  .result-label { font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 32px; }
+  .result-breakdown { display: flex; flex-direction: column; gap: 14px; }
+  .result-row { display: flex; justify-content: space-between; padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .result-row:last-child { border: none; }
+  .result-key { font-size: 14px; color: rgba(255,255,255,0.6); }
+  .result-val { font-size: 14px; font-weight: 600; color: white; }
+
+  /* ─── ÁREA PRIVADA ─── */
+  .login-wrapper {
+    min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr;
+    padding-top: 72px;
+  }
+  .login-left {
+    background: var(--navy); display: flex; flex-direction: column;
+    justify-content: center; padding: 80px;
+    position: relative; overflow: hidden;
+  }
+  .login-left::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--navy) 0%, #001533 100%);
+  }
+  .login-left-pattern {
+    position: absolute; inset: 0; opacity: 0.04;
+    background-image: repeating-linear-gradient(45deg, white 0, white 1px, transparent 0, transparent 50%);
+    background-size: 24px 24px;
+  }
+  .login-left-content { position: relative; z-index: 2; }
+  .login-left h2 {
+    font-family: 'DM Serif Display', serif; font-size: 42px;
+    color: white; font-weight: 400; line-height: 1.2; margin-bottom: 20px;
+  }
+  .login-left h2 em { font-style: italic; color: rgba(201,168,76,0.9); }
+  .login-left p { font-size: 16px; color: rgba(255,255,255,0.6); line-height: 1.7; margin-bottom: 40px; }
+  .login-features { display: flex; flex-direction: column; gap: 16px; }
+  .login-feature {
+    display: flex; align-items: center; gap: 14px;
+    padding: 16px 20px; border-radius: 12px;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+  }
+  .login-feature-icon { font-size: 22px; }
+  .login-feature span { font-size: 14px; color: rgba(255,255,255,0.8); }
+  .login-right {
+    display: flex; align-items: center; justify-content: center;
+    padding: 60px;
+  }
+  .login-form-box { width: 100%; max-width: 400px; }
+  .login-form-box h2 {
+    font-family: 'DM Serif Display', serif; font-size: 32px;
+    color: var(--navy); font-weight: 400; margin-bottom: 8px;
+  }
+  .login-form-box p { font-size: 15px; color: var(--muted); margin-bottom: 32px; }
+  .forgot-link { font-size: 13px; color: var(--red); text-decoration: none; float: right; }
+  .forgot-link:hover { text-decoration: underline; }
+  .divider { display: flex; align-items: center; gap: 16px; margin: 24px 0; }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .divider span { font-size: 12px; color: var(--muted); }
+
+  /* ─── PESQUISA ─── */
+  .search-hero { background: var(--cream); padding: 120px 80px 60px; }
+  .search-bar-lg {
+    max-width: 720px; margin: 0 auto;
+    position: relative;
+  }
+  .search-bar-lg input {
+    padding: 18px 60px 18px 24px;
+    font-size: 17px; border-radius: 16px;
+    border: 2px solid rgba(0,36,76,0.15);
+    box-shadow: 0 8px 40px rgba(0,36,76,0.1);
+  }
+  .search-bar-lg input:focus { border-color: var(--navy); }
+  .search-bar-lg button {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    width: 44px; height: 44px; background: var(--navy); color: white;
+    border: none; border-radius: 10px; cursor: pointer; font-size: 18px;
+    transition: background 0.2s;
+  }
+  .search-bar-lg button:hover { background: var(--navy-light); }
+  .search-filters { max-width: 720px; margin: 20px auto 0; display: flex; gap: 8px; }
+  .search-results-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 40px; }
+  .search-sidebar h4 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--navy); margin-bottom: 12px; }
+  .search-result-item {
+    padding: 24px; background: white; border: 1px solid var(--border);
+    border-radius: 14px; margin-bottom: 14px;
+    transition: all 0.2s; cursor: pointer;
+  }
+  .search-result-item:hover { box-shadow: 0 8px 24px rgba(0,36,76,0.08); transform: translateX(4px); }
+  .result-type { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--red); margin-bottom: 6px; }
+  .search-result-item h3 { font-size: 16px; font-weight: 600; color: var(--navy); margin-bottom: 8px; }
+  .search-result-item p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+  mark { background: rgba(120,36,35,0.12); color: var(--red); padding: 0 2px; border-radius: 2px; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--navy); color: white; padding: 60px 80px 30px;
+    margin-top: auto;
+  }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 50px; }
+  .footer-brand p { font-size: 14px; color: rgba(255,255,255,0.5); line-height: 1.7; margin-top: 16px; max-width: 240px; }
+  .footer-col h4 { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 16px; }
+  .footer-col a { display: block; color: rgba(255,255,255,0.65); font-size: 14px; text-decoration: none; margin-bottom: 10px; transition: color 0.2s; cursor: pointer; }
+  .footer-col a:hover { color: white; }
+  .footer-bottom { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 28px; display: flex; justify-content: space-between; align-items: center; }
+  .footer-bottom p { font-size: 13px; color: rgba(255,255,255,0.35); }
+  .footer-bottom-links { display: flex; gap: 20px; }
+  .footer-bottom-links a { font-size: 13px; color: rgba(255,255,255,0.35); text-decoration: none; cursor: pointer; }
+  .footer-bottom-links a:hover { color: rgba(255,255,255,0.6); }
+
+  /* ─── NOTÍCIAS PAGE ─── */
+  .news-full-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+  .news-full-card {
+    background: white; border: 1px solid var(--border); border-radius: 16px;
+    overflow: hidden; transition: all 0.3s; cursor: pointer;
+  }
+  .news-full-card:hover { box-shadow: 0 16px 48px rgba(0,36,76,0.1); transform: translateY(-6px); }
+  .news-full-image {
+    width: 100%; height: 200px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .bg-1 { background: linear-gradient(135deg, var(--navy) 0%, #1a3a6e 100%); }
+  .bg-2 { background: linear-gradient(135deg, var(--red) 0%, #5a1b1a 100%); }
+  .bg-3 { background: linear-gradient(135deg, #1a6e3a 0%, #0d3d20 100%); }
+  .bg-4 { background: linear-gradient(135deg, #6e4a1a 0%, #3d2a0d 100%); }
+  .bg-5 { background: linear-gradient(135deg, #3a1a6e 0%, #1d0d3d 100%); }
+  .bg-6 { background: linear-gradient(135deg, #6e1a4a 0%, #3d0d28 100%); }
+  .news-full-image-icon { font-size: 56px; opacity: 0.25; }
+  .news-full-body { padding: 24px; }
+  .news-meta { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; }
+  .news-cat-badge {
+    padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.5px; background: rgba(120,36,35,0.1); color: var(--red);
+  }
+  .news-full-body h3 {
+    font-family: 'DM Serif Display', serif; font-size: 19px; font-weight: 400;
+    color: var(--navy); line-height: 1.3; margin-bottom: 10px;
+  }
+  .news-full-body p { font-size: 13.5px; color: var(--muted); line-height: 1.6; }
+
+  /* ─── ALERTS / TOASTS ─── */
+  .alert-banner {
+    background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 10px; padding: 14px 20px; margin-bottom: 24px;
+    display: flex; align-items: center; gap: 12px;
+    font-size: 14px; color: #7c6510;
+  }
+
+  /* Animations */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .page.active > * { animation: fadeInUp 0.4s ease-out; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--cream); }
+  ::-webkit-scrollbar-thumb { background: rgba(0,36,76,0.2); border-radius: 3px; }
+
+  /* Mobile hint */
+  @media (max-width: 900px) {
+    .nav-links { display: none; }
+    .section { padding: 60px 24px; }
+    .page-header { padding: 100px 24px 50px; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { display: none; }
+    .two-col, .contact-grid, .faq-grid, .sim-layout, .login-wrapper, .search-results-grid { grid-template-columns: 1fr; }
+    .services-grid, .services-full-grid, .news-full-grid { grid-template-columns: 1fr; }
+    footer { padding: 40px 24px 20px; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    nav { padding: 0 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ NAV ═══════════════ -->
+<nav id="mainNav">
+  <a class="nav-logo" onclick="showPage('home')">
+    <div class="nav-logo-mark">M</div>
+    <div class="nav-logo-text">
+      <span>MALUA</span>
+      <span>Cooperativa de Poupança e Crédito</span>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#" onclick="showPage('home')" id="nav-home" class="active">Início</a></li>
+    <li><a href="#" onclick="showPage('institucional')" id="nav-institucional">Institucional</a></li>
+    <li><a href="#" onclick="showPage('servicos')" id="nav-servicos">Serviços</a></li>
+    <li><a href="#" onclick="showPage('noticias')" id="nav-noticias">Notícias</a></li>
+    <li><a href="#" onclick="showPage('documentos')" id="nav-documentos">Documentos</a></li>
+    <li><a href="#" onclick="showPage('contacto')" id="nav-contacto">Contacto</a></li>
+    <li><a href="#" onclick="showPage('faq')" id="nav-faq">FAQ</a></li>
+    <li><a href="#" onclick="showPage('simuladores')" id="nav-simuladores">Simuladores</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn-search" onclick="showPage('pesquisa')" title="Pesquisa">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    </button>
+    <a class="btn-area-privada" onclick="showPage('area-privada')">Área Privada</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════
+     PAGE: HOME
+════════════════════════════════════════ -->
+<div id="page-home" class="page active">
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-tag">Cooperativa Confiável</div>
+      <h1>O seu futuro<br>começa com uma <em>boa</em><br>decisão financeira</h1>
+      <p>A MALUA é a cooperativa de poupança e crédito que coloca os seus membros em primeiro lugar. Soluções financeiras transparentes, acessíveis e pensadas para si.</p>
+      <div class="hero-actions">
+        <a class="btn-primary" onclick="showPage('servicos')">Conheça os Serviços</a>
+        <a class="btn-secondary" onclick="showPage('simuladores')">Simular Crédito</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-number">12<span>k+</span></div>
+          <div class="stat-label">Membros ativos</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">98<span>%</span></div>
+          <div class="stat-label">Satisfação</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">15<span>+</span></div>
+          <div class="stat-label">Anos de história</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-pattern"></div>
+      <div class="hero-card-stack">
+        <div class="bank-card card-back">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+            <span style="font-size:12px;letter-spacing:1px;opacity:0.5;font-family:sans-serif;">POUPANÇA</span>
+            <span class="card-logo-small">M</span>
+          </div>
+          <div class="card-number">•••• •••• •••• 4892</div>
+          <div class="card-footer">
+            <span class="card-name">MEMBRO ASSOCIADO</span>
+            <span style="font-size:11px;opacity:0.6;font-family:sans-serif;">12/28</span>
+          </div>
+        </div>
+        <div class="bank-card card-main">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+            <div class="card-chip"></div>
+            <span class="card-logo-small">MALUA</span>
+          </div>
+          <div class="card-number">4782 •••• •••• 1247</div>
+          <div class="card-footer">
+            <div>
+              <div class="card-name">TITULAR DO CARTÃO</div>
+              <div style="font-size:14px;letter-spacing:0.5px;margin-top:4px;">Ana Fernandes</div>
+            </div>
+            <span style="font-size:11px;opacity:0.6;font-family:sans-serif;">08/27</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Serviços Destaque -->
+  <div class="section" style="background:var(--cream);">
+    <div class="section-header centered">
+      <div class="section-tag">O que oferecemos</div>
+      <h2 class="section-title">Serviços feitos para <em>si</em></h2>
+      <p class="section-subtitle">Da poupança ao crédito, passando pelos seguros — temos tudo o que precisa para uma vida financeira saudável.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">💰</div>
+        <h3>Contas de Poupança</h3>
+        <p>Poupe com taxas de juro competitivas e condições flexíveis adaptadas ao seu perfil.</p>
+        <a class="service-link" onclick="showPage('servicos')">Saiba mais →</a>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🏦</div>
+        <h3>Crédito Pessoal</h3>
+        <p>Financiamento rápido e justo para os seus projetos pessoais, com condições acessíveis.</p>
+        <a class="service-link" onclick="showPage('servicos')">Saiba mais →</a>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🏠</div>
+        <h3>Crédito Habitação</h3>
+        <p>Realize o sonho da casa própria com apoio especializado em cada passo do processo.</p>
+        <a class="service-link" onclick="showPage('servicos')">Saiba mais →</a>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">📱</div>
+        <h3>Banca Digital</h3>
+        <p>Gerencie as suas finanças em qualquer lugar através da nossa plataforma online segura.</p>
+        <a class="service-link" onclick="showPage('servicos')">Saiba mais →</a>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🛡️</div>
+        <h3>Seguros</h3>
+        <p>Proteja o que mais importa com as nossas soluções de seguro vida, saúde e habitação.</p>
+        <a class="service-link" onclick="showPage('servicos')">Saiba mais →</a>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">📈</div>
+        <h3>Investimento</h3>
+        <p>Faça o seu dinheiro crescer com planos de investimento pensados a longo prazo.</p>
+        <a class="service-link" onclick="showPage('servicos')">Saiba mais →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Últimas Notícias -->
+  <div class="section">
+    <div class="section-header" style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:40px;">
+      <div>
+        <div class="section-tag">Novidades</div>
+        <h2 class="section-title" style="margin-bottom:0;">Últimas <em>notícias</em></h2>
+      </div>
+      <a class="service-link" onclick="showPage('noticias')">Ver todas as notícias →</a>
+    </div>
+    <div class="news-grid">
+      <div class="news-card">
+        <div class="news-image">
+          <span class="news-image-icon">🏛️</span>
+          <div class="news-image-overlay"></div>
+          <span class="news-category">Institucional</span>
+        </div>
+        <div class="news-body">
+          <div class="news-date">14 Fevereiro 2026</div>
+          <h3>MALUA celebra 15 anos ao serviço dos seus membros</h3>
+          <p>Uma década e meia de compromisso com a inclusão financeira e o desenvolvimento das comunidades.</p>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="news-image red-bg">
+          <span class="news-image-icon">📊</span>
+          <div class="news-image-overlay"></div>
+          <span class="news-category">Resultados</span>
+        </div>
+        <div class="news-body">
+          <div class="news-date">2 Janeiro 2026</div>
+          <h3>Resultados do exercício de 2025 superam expetativas</h3>
+          <p>Crescimento de 23% na captação de poupança e expansão do crédito concedido.</p>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="news-image" style="background: linear-gradient(135deg,#1a6e3a,#0d3d20)">
+          <span class="news-image-icon">📱</span>
+          <div class="news-image-overlay"></div>
+          <span class="news-category">Digital</span>
+        </div>
+        <div class="news-body">
+          <div class="news-date">20 Dezembro 2025</div>
+          <h3>Nova plataforma digital disponível para todos os membros</h3>
+          <p>Interface renovada com novas funcionalidades de gestão de conta e simuladores.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="nav-logo" style="cursor:default;">
+          <div class="nav-logo-mark">M</div>
+          <div class="nav-logo-text">
+            <span>MALUA</span>
+            <span style="color:rgba(255,255,255,0.4);">Cooperativa de Poupança e Crédito</span>
+          </div>
+        </div>
+        <p>Comprometidos com a inclusão financeira e o bem-estar dos nossos membros desde 2011.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Serviços</h4>
+        <a>Poupança</a><a>Crédito Pessoal</a><a>Crédito Habitação</a><a>Seguros</a><a>Investimento</a>
+      </div>
+      <div class="footer-col">
+        <h4>Institucional</h4>
+        <a onclick="showPage('institucional')">Quem somos</a>
+        <a>Missão e Valores</a><a>Órgãos Sociais</a>
+        <a onclick="showPage('documentos')">Documentos</a>
+        <a onclick="showPage('noticias')">Notícias</a>
+      </div>
+      <div class="footer-col">
+        <h4>Apoio</h4>
+        <a onclick="showPage('faq')">FAQ</a>
+        <a onclick="showPage('contacto')">Contacto</a>
+        <a>Reclamações</a><a>Política de Privacidade</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 MALUA — Cooperativa de Poupança e Crédito. Todos os direitos reservados.</p>
+      <div class="footer-bottom-links">
+        <a>Privacidade</a><a>Termos</a><a>Cookies</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE: INSTITUCIONAL
+════════════════════════════════════════ -->
+<div id="page-institucional" class="page">
+  <div class="page-header">
+    <div class="page-header-pattern"></div>
+    <div class="page-header-inner">
+      <div class="breadcrumb"><a onclick="showPage('home')">Início</a> <span>›</span> <span>Institucional</span></div>
+      <h1>Quem <em>somos</em></h1>
+      <p>Uma cooperativa fundada na confiança, na transparência e no compromisso com os nossos membros e comunidades.</p>
+    </div>
+  </div>
+  <div class="section">
+    <div class="two-col">
+      <div>
+        <div class="section-tag">A nossa história</div>
+        <h2 class="section-title">Mais de 15 anos ao <em>seu lado</em></h2>
+        <p style="color:var(--muted);line-height:1.8;margin-bottom:16px;">Fundada em 2011, a MALUA nasceu da vontade de criar uma instituição financeira centrada nas pessoas. Começámos como uma pequena cooperativa local e crescemos para servir mais de 12.000 membros.</p>
+        <p style="color:var(--muted);line-height:1.8;">O nosso modelo cooperativo garante que cada membro tem voz ativa nas decisões e que os resultados regressam à comunidade sob a forma de melhores condições e serviços.</p>
+        <ul class="feature-list">
+          <li>Supervisão pelo Banco Nacional e regulada pela lei das cooperativas</li>
+          <li>Fundo de Garantia de Depósitos que protege as suas poupanças</li>
+          <li>Assembleia Geral anual com participação de todos os membros</li>
+          <li>Relatórios de contas públicos e auditoria independente</li>
+        </ul>
+      </div>
+      <div>
+        <div style="background:var(--navy);border-radius:24px;padding:48px;color:white;height:100%;display:flex;flex-direction:column;justify-content:space-between;">
+          <div>
+            <div style="font-family:'DM Serif Display',serif;font-size:48px;font-weight:400;color:var(--gold);line-height:1;">12.847</div>
+            <div style="font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:40px;">Membros cooperadores ativos</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;">
+            <div><div style="font-family:'DM Serif Display',serif;font-size:34px;color:white;">€94M</div><div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px;">Ativos totais geridos</div></div>
+            <div><div style="font-family:'DM Serif Display',serif;font-size:34px;color:white;">€62M</div><div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px;">Crédito concedido</div></div>
+            <div><div style="font-family:'DM Serif Display',serif;font-size:34px;color:white;">€31M</div><div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px;">Poupanças captadas</div></div>
+            <div><div style="font-family:'DM Serif Display',serif;font-size:34px;color:white;">4.2%</div><div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px;">Taxa máx. crédito pessoal</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:80px;">
+      <div class="section-tag">Valores que nos guiam</div>
+      <h2 class="section-title">Missão, <em>Visão</em> & Valores</h2>
+      <div class="values-grid">
+        <div class="value-card"><div class="value-icon">🤝</div><h4>Solidariedade</h4><p>Ajudamo-nos mutuamente. O sucesso de cada membro é o sucesso de todos.</p></div>
+        <div class="value-card"><div class="value-icon">🔍</div><h4>Transparência</h4><p>Contas abertas, decisões partilhadas e comunicação honesta em tudo o que fazemos.</p></div>
+        <div class="value-card"><div class="value-icon">⚖️</div><h4>Equidade</h4><p>Todos os membros têm os mesmos direitos, independentemente do seu capital social.</p></div>
+        <div class="value-card"><div class="value-icon">🌱</div><h4>Sustentabilidade</h4><p>Crescemos de forma responsável, pensando nas gerações futuras.</p></div>
+        <div class="value-card"><div class="value-icon">🏘️</div><h4>Comunidade</h4><p>Reinvestimos na comunidade porque acreditamos no desenvolvimento local.</p></div>
+        <div class="value-card"><div class="value-icon">🔐</div><h4>Segurança</h4><p>As suas poupanças estão protegidas pelos mais elevados padrões de segurança.</p></div>
+      </div>
+    </div>
+  </div>
+  <footer style="background:var(--navy);color:white;padding:30px 80px;text-align:center;">
+    <p style="font-size:13px;color:rgba(255,255,255,0.35);">© 2026 MALUA — Cooperativa de Poupança e Crédito</p>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE: SERVIÇOS
+════════════════════════════════════════ -->
+<div id="page-servicos" class="page">
+  <div class="page-header">
+    <div class="page-header-pattern"></div>
+    <div class="page-header-inner">
+      <div class="breadcrumb"><a onclick="showPage('home')">Início</a> <span>›</span> <span>Serviços</span></div>
+      <h1>Os nossos <em>serviços</em></h1>
+      <p>Soluções financeiras completas, pensadas para cada fase da sua vida.</p>
+    </div>
+  </div>
+  <div class="section">
+    <div class="alert-banner">⚠️ <strong>Promoção de Fevereiro:</strong> Taxa de juro de 3,2% nos créditos pessoais aprovados até 28/02/2026. Consulte condições.</div>
+    <div class="services-full-grid">
+      <div class="service-full-card">
+        <div class="service-full-icon icon-navy">💰</div>
+        <div class="service-full-body">
+          <h3>Conta Poupança Flexível</h3>
+          <p>Poupança sem prazo mínimo, com acesso ao dinheiro quando precisar. Taxa de juro anual de 3,0% até 50.000€.</p>
+          <div class="service-tags"><span class="tag">Até 3,0% TAE</span><span class="tag">Sem prazo mínimo</span><span class="tag red">Popular</span></div>
+        </div>
+      </div>
+      <div class="service-full-card">
+        <div class="service-full-icon icon-red">🏦</div>
+        <div class="service-full-body">
+          <h3>Crédito Pessoal</h3>
+          <p>De 500€ a 30.000€, com prazos de 12 a 84 meses. Aprovação rápida para membros com conta ativa.</p>
+          <div class="service-tags"><span class="tag">A partir de 3,2% TAEG</span><span class="tag">Aprovação em 48h</span></div>
+        </div>
+      </div>
+      <div class="service-full-card">
+        <div class="service-full-icon icon-navy">🏠</div>
+        <div class="service-full-body">
+          <h3>Crédito Habitação</h3>
+          <p>Financiamento até 90% do valor do imóvel, com taxa variável ou mista. Apoio jurídico incluído.</p>
+          <div class="service-tags"><span class="tag">Euribor + 1,2%</span><span class="tag">Até 40 anos</span><span class="tag">Apoio jurídico</span></div>
+        </div>
+      </div>
+      <div class="service-full-card">
+        <div class="service-full-icon icon-red">🚗</div>
+        <div class="service-full-body">
+          <h3>Crédito Automóvel</h3>
+          <p>Financiamento para viaturas novas e usadas, com ou sem entrada inicial. Seguros competitivos.</p>
+          <div class="service-tags"><span class="tag">A partir de 3,8% TAEG</span><span class="tag">Até 72 meses</span></div>
+        </div>
+      </div>
+      <div class="service-full-card">
+        <div class="service-full-icon icon-navy">📱</div>
+        <div class="service-full-body">
+          <h3>Conta à Ordem Digital</h3>
+          <p>Conta bancária 100% digital, sem comissões de manutenção. Transferências SEPA gratuitas.</p>
+          <div class="service-tags"><span class="tag">Sem comissões</span><span class="tag">Cartão Débito</span><span class="tag red">Novo</span></div>
+        </div>
+      </div>
+      <div class="service-full-card">
+        <div class="service-full-icon icon-red">🛡️</div>
+        <div class="service-full-body">
+          <h3>Seguro de Vida e Saúde</h3>
+          <p>Proteção para si e para a sua família. Seguros vida, saúde, acidentes pessoais e multirriscos.</p>
+          <div class="service-tags"><span class="tag">Parceria AXA</span><span class="tag">Desconto cooperativo</span></div>
+        </div>
+      </div>
+      <div class="service-full-card">
+        <div class="service-full-icon icon-navy">📈</div>
+        <div class="service-full-body">
+          <h3>Planos de Investimento</h3>
+          <p>Depósito a prazo, fundos de investimento e certificados de aforro. Rentabilidades acima da média.</p>
+          <div class="service-tags"><span class="tag">Perfil Conservador</span><span class="tag">Perfil Moderado</span><span class="tag">Capital garantido</span></div>
+        </div>
+      </div>
+      <div class="service-full-card">
+        <div class="service-full-icon icon-red">🏢</div>
+        <div class="service-full-body">
+          <h3>Crédito Empresarial</h3>
+          <p>Soluções para micro e pequenas empresas: fundo de maneio, investimento e leasing.</p>
+          <div class="service-tags"><span class="tag">PME</span><span class="tag">Leasing</span><span class="tag">Factoring</span></div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:48px;">
+      <a class="btn-primary" onclick="showPage('simuladores')">Simular Crédito ou Poupança</a>
+    </div>
+  </div>
+  <footer style="background:var(--navy);color:white;padding:30px 80px;text-align:center;">
+    <p style="font-size:13px;color:rgba(255,255,255,0.35);">© 2026 MALUA — Cooperativa de Poupança e Crédito</p>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE: NOTÍCIAS
+════════════════════════════════════════ -->
+<div id="page-noticias" class="page">
+  <div class="page-header">
+    <div class="page-header-pattern"></div>
+    <div class="page-header-inner">
+      <div class="breadcrumb"><a onclick="showPage('home')">Início</a> <span>›</span> <span>Notícias</span></div>
+      <h1>Notícias & <em>Comunicados</em></h1>
+      <p>Mantenha-se informado sobre as últimas novidades da MALUA e do setor cooperativo.</p>
+    </div>
+  </div>
+  <div class="section">
+    <div class="doc-filters">
+      <button class="filter-btn active">Todas</button>
+      <button class="filter-btn">Institucional</button>
+      <button class="filter-btn">Resultados</button>
+      <button class="filter-btn">Digital</button>
+      <button class="filter-btn">Eventos</button>
+      <button class="filter-btn">Regulatório</button>
+    </div>
+    <div class="news-full-grid">
+      <div class="news-full-card">
+        <div class="news-full-image bg-1"><span class="news-full-image-icon">🏛️</span><div class="news-image-overlay"></div><span class="news-category">Institucional</span></div>
+        <div class="news-full-body">
+          <div class="news-meta"><span class="news-cat-badge">Institucional</span><span style="font-size:12px;color:var(--muted);">14 Fev 2026</span></div>
+          <h3>MALUA celebra 15 anos ao serviço dos seus membros</h3>
+          <p>Uma década e meia de compromisso com a inclusão financeira e o desenvolvimento das comunidades onde operamos.</p>
+        </div>
+      </div>
+      <div class="news-full-card">
+        <div class="news-full-image bg-2"><span class="news-full-image-icon">📊</span><div class="news-image-overlay"></div><span class="news-category">Resultados</span></div>
+        <div class="news-full-body">
+          <div class="news-meta"><span class="news-cat-badge">Resultados</span><span style="font-size:12px;color:var(--muted);">2 Jan 2026</span></div>
+          <h3>Resultados do exercício de 2025 superam as expetativas</h3>
+          <p>Crescimento de 23% na captação de poupança. Crédito concedido aumentou 18% face ao ano anterior.</p>
+        </div>
+      </div>
+      <div class="news-full-card">
+        <div class="news-full-image bg-3"><span class="news-full-image-icon">📱</span><div class="news-image-overlay"></div><span class="news-category">Digital</span></div>
+        <div class="news-full-body">
+          <div class="news-meta"><span class="news-cat-badge">Digital</span><span style="font-size:12px;color:var(--muted);">20 Dez 2025</span></div>
+          <h3>Nova plataforma digital disponível para todos os membros</h3>
+          <p>Interface renovada com novos simuladores, gestão de conta melhorada e suporte por chat em tempo real.</p>
+        </div>
+      </div>
+      <div class="news-full-card">
+        <div class="news-full-image bg-4"><span class="news-full-image-icon">🎓</span><div class="news-image-overlay"></div><span class="news-category">Eventos</span></div>
+        <div class="news-full-body">
+          <div class="news-meta"><span class="news-cat-badge">Eventos</span><span style="font-size:12px;color:var(--muted);">5 Nov 2025</span></div>
+          <h3>Assembleia Geral 2025: aprovados os planos estratégicos para 2026-2028</h3>
+          <p>Com participação recorde de membros, foram aprovados novos estatutos e o plano de expansão digital.</p>
+        </div>
+      </div>
+      <div class="news-full-card">
+        <div class="news-full-image bg-5"><span class="news-full-image-icon">⚖️</span><div class="news-image-overlay"></div><span class="news-category">Regulatório</span></div>
+        <div class="news-full-body">
+          <div class="news-meta"><span class="news-cat-badge">Regulatório</span><span style="font-size:12px;color:var(--muted);">14 Out 2025</span></div>
+          <h3>MALUA obtém certificação ISO 27001 em Segurança da Informação</h3>
+          <p>A certificação reforça o compromisso com a proteção dos dados dos nossos membros.</p>
+        </div>
+      </div>
+      <div class="news-full-card">
+        <div class="news-full-image bg-6"><span class="news-full-image-icon">🌍</span><div class="news-image-overlay"></div><span class="news-category">Comunidade</span></div>
+        <div class="news-full-body">
+          <div class="news-meta"><span class="news-cat-badge">Comunidade</span><span style="font-size:12px;color:var(--muted);">3 Set 2025</span></div>
+          <h3>Programa de apoio à literacia financeira chega a 800 jovens</h3>
+          <p>Em parceria com escolas locais, o programa já formou mais de 800 jovens em educação financeira básica.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer style="background:var(--navy);color:white;padding:30px 80px;text-align:center;">
+    <p style="font-size:13px;color:rgba(255,255,255,0.35);">© 2026 MALUA — Cooperativa de Poupança e Crédito</p>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE: DOCUMENTOS
+════════════════════════════════════════ -->
+<div id="page-documentos" class="page">
+  <div class="page-header">
+    <div class="page-header-pattern"></div>
+    <div class="page-header-inner">
+      <div class="breadcrumb"><a onclick="showPage('home')">Início</a> <span>›</span> <span>Documentos</span></div>
+      <h1>Centro de <em>Documentos</em></h1>
+      <p>Aceda a todos os documentos institucionais, regulatórios e informativos da MALUA.</p>
+    </div>
+  </div>
+  <div class="section">
+    <div class="doc-filters">
+      <button class="filter-btn active">Todos</button>
+      <button class="filter-btn">Estatutos</button>
+      <button class="filter-btn">Relatórios</button>
+      <button class="filter-btn">Tarifários</button>
+      <button class="filter-btn">Formulários</button>
+      <button class="filter-btn">Regulamentos</button>
+    </div>
+    <div class="docs-list">
+      <div class="doc-item">
+        <div class="doc-type pdf">PDF</div>
+        <div class="doc-info">
+          <h4>Estatutos da Cooperativa MALUA — Revisão 2024</h4>
+          <p>Estatutos atualizados pela Assembleia Geral de 15 de Novembro de 2024</p>
+        </div>
+        <div class="doc-meta">
+          <div class="doc-date">15 Nov 2024</div>
+          <div class="doc-size">2,4 MB</div>
+        </div>
+        <button class="btn-download">↓ Descarregar</button>
+      </div>
+      <div class="doc-item">
+        <div class="doc-type pdf">PDF</div>
+        <div class="doc-info">
+          <h4>Relatório & Contas 2024</h4>
+          <p>Relatório anual com demonstrações financeiras auditadas e relatório de gestão</p>
+        </div>
+        <div class="doc-meta">
+          <div class="doc-date">28 Mar 2025</div>
+          <div class="doc-size">8,1 MB</div>
+        </div>
+        <button class="btn-download">↓ Descarregar</button>
+      </div>
+      <div class="doc-item">
+        <div class="doc-type pdf">PDF</div>
+        <div class="doc-info">
+          <h4>Tarifário de Serviços — 2026</h4>
+          <p>Listagem completa de comissões, taxas e preçário em vigor desde 1 de Janeiro de 2026</p>
+        </div>
+        <div class="doc-meta">
+          <div class="doc-date">1 Jan 2026</div>
+          <div class="doc-size">540 KB</div>
+        </div>
+        <button class="btn-download">↓ Descarregar</button>
+      </div>
+      <div class="doc-item">
+        <div class="doc-type docx">DOCX</div>
+        <div class="doc-info">
+          <h4>Formulário de Pedido de Crédito Pessoal</h4>
+          <p>Formulário editável para entrega presencial ou por email</p>
+        </div>
+        <div class="doc-meta">
+          <div class="doc-date">10 Jan 2026</div>
+          <div class="doc-size">128 KB</div>
+        </div>
+        <button class="btn-download">↓ Descarregar</button>
+      </div>
+      <div class="doc-item">
+        <div class="doc-type xlsx">XLSX</div>
+        <div class="doc-info">
+          <h4>Simulador de Crédito Habitação (Excel)</h4>
+          <p>Folha de cálculo para simulação detalhada das condições de crédito habitação</p>
+        </div>
+        <div class="doc-meta">
+          <div class="doc-date">5 Fev 2026</div>
+          <div class="doc-size">210 KB</div>
+        </div>
+        <button class="btn-download">↓ Descarregar</button>
+      </div>
+      <div class="doc-item">
+        <div class="doc-type pdf">PDF</div>
+        <div class="doc-info">
+          <h4>Política de Privacidade e Proteção de Dados</h4>
+          <p>Informação sobre o tratamento de dados pessoais conforme o RGPD</p>
+        </div>
+        <div class="doc-meta">
+          <div class="doc-date">1 Jan 2025</div>
+          <div class="doc-size">380 KB</div>
+        </div>
+        <button class="btn-download">↓ Descarregar</button>
+      </div>
+      <div class="doc-item">
+        <div class="doc-type pdf">PDF</div>
+        <div class="doc-info">
+          <h4>Regulamento Interno de Crédito</h4>
+          <p>Normas e critérios de análise e concessão de crédito da cooperativa</p>
+        </div>
+        <div class="doc-meta">
+          <div class="doc-date">15 Jun 2024</div>
+          <div class="doc-size">1,2 MB</div>
+        </div>
+        <button class="btn-download">↓ Descarregar</button>
+      </div>
+    </div>
+  </div>
+  <footer style="background:var(--navy);color:white;padding:30px 80px;text-align:center;">
+    <p style="font-size:13px;color:rgba(255,255,255,0.35);">© 2026 MALUA — Cooperativa de Poupança e Crédito</p>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE: CONTACTO
+════════════════════════════════════════ -->
+<div id="page-contacto" class="page">
+  <div class="page-header">
+    <div class="page-header-pattern"></div>
+    <div class="page-header-inner">
+      <div class="breadcrumb"><a onclick="showPage('home')">Início</a> <span>›</span> <span>Contacto</span></div>
+      <h1>Entre em <em>contacto</em></h1>
+      <p>Estamos aqui para ajudar. Fale connosco por telefone, email ou venha visitar-nos.</p>
+    </div>
+  </div>
+  <div class="section">
+    <div class="contact-grid">
+      <div class="contact-info">
+        <div class="contact-card">
+          <div class="contact-icon">📍</div>
+          <div>
+            <h4>Sede Principal</h4>
+            <p>Av. da Cooperação, 142<br>1500-123 Lisboa, Portugal</p>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon">📞</div>
+          <div>
+            <h4>Telefone & WhatsApp</h4>
+            <p>+351 21 345 6789<br>Seg–Sex: 9h00–18h00</p>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon">✉️</div>
+          <div>
+            <h4>Email</h4>
+            <p>geral@malua.coop<br>credito@malua.coop (crédito)</p>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon">🕒</div>
+          <div>
+            <h4>Horário de Atendimento</h4>
+            <p>Segunda a Sexta: 9h00 – 18h00<br>Sábado: 9h00 – 13h00</p>
+          </div>
+        </div>
+        <div style="background:var(--cream);border-radius:16px;padding:24px;border:1px solid var(--border);">
+          <h4 style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:12px;">Delegações regionais</h4>
+          <div style="font-size:14px;color:var(--muted);line-height:2;">
+            📍 Porto — R. das Flores, 88<br>
+            📍 Coimbra — Largo da Sé, 24<br>
+            📍 Faro — Av. República, 15
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="background:white;border:1px solid var(--border);border-radius:20px;padding:40px;">
+          <h3 style="font-family:'DM Serif Display',serif;font-size:26px;color:var(--navy);font-weight:400;margin-bottom:8px;">Envie-nos uma mensagem</h3>
+          <p style="font-size:14px;color:var(--muted);margin-bottom:28px;">Responderemos em menos de 24 horas úteis.</p>
+          <div class="form-row">
+            <div class="form-group"><label>Nome *</label><input type="text" placeholder="O seu nome completo"></div>
+            <div class="form-group"><label>Email *</label><input type="email" placeholder="email@exemplo.com"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Telefone</label><input type="tel" placeholder="+351 9XX XXX XXX"></div>
+            <div class="form-group">
+              <label>Assunto *</label>
+              <select>
+                <option>Selecione o assunto</option>
+                <option>Informação sobre serviços</option>
+                <option>Pedido de crédito</option>
+                <option>Reclamação</option>
+                <option>Associação como membro</option>
+                <option>Outro</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group"><label>Mensagem *</label><textarea placeholder="Descreva como podemos ajudá-lo…"></textarea></div>
+          <div class="form-group" style="display:flex;align-items:flex-start;gap:10px;margin-top:4px;">
+            <input type="checkbox" id="gdpr" style="width:16px;height:16px;margin-top:2px;flex-shrink:0;">
+            <label for="gdpr" style="font-size:13px;color:var(--muted);font-weight:400;">Concordo com a <a href="#" style="color:var(--red)">Política de Privacidade</a> e autorizo o tratamento dos meus dados para resposta ao meu pedido.</label>
+          </div>
+          <button class="btn-submit" style="margin-top:8px;">Enviar Mensagem</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer style="background:var(--navy);color:white;padding:30px 80px;text-align:center;">
+    <p style="font-size:13px;color:rgba(255,255,255,0.35);">© 2026 MALUA — Cooperativa de Poupança e Crédito</p>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE: FAQ
+════════════════════════════════════════ -->
+<div id="page-faq" class="page">
+  <div class="page-header">
+    <div class="page-header-pattern"></div>
+    <div class="page-header-inner">
+      <div class="breadcrumb"><a onclick="showPage('home')">Início</a> <span>›</span> <span>FAQ</span></div>
+      <h1>Perguntas <em>frequentes</em></h1>
+      <p>Encontre respostas rápidas às dúvidas mais comuns dos nossos membros.</p>
+    </div>
+  </div>
+  <div class="section">
+    <div class="faq-grid">
+      <div>
+        <p style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--navy);margin-bottom:12px;">Categorias</p>
+        <div class="faq-categories">
+          <button class="faq-cat-btn active" onclick="this.closest('.faq-categories').querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active')">🏠 Conta & Adesão</button>
+          <button class="faq-cat-btn" onclick="this.closest('.faq-categories').querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active')">💳 Crédito</button>
+          <button class="faq-cat-btn" onclick="this.closest('.faq-categories').querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active')">💰 Poupança</button>
+          <button class="faq-cat-btn" onclick="this.closest('.faq-categories').querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active')">📱 Banca Digital</button>
+          <button class="faq-cat-btn" onclick="this.closest('.faq-categories').querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active')">🛡️ Segurança</button>
+          <button class="faq-cat-btn" onclick="this.closest('.faq-categories').querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active')">📋 Documentação</button>
+        </div>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item open">
+          <div class="faq-question" onclick="this.closest('.faq-item').classList.toggle('open')">
+            Como me posso tornar membro da cooperativa MALUA?
+            <div class="faq-toggle">+</div>
+          </div>
+          <div class="faq-answer">Para se tornar membro, basta preencher o formulário de adesão disponível na nossa sede ou online, apresentar documento de identificação válido e realizar a subscrição da quota de entrada mínima de 50€. O processo de análise demora entre 3 a 5 dias úteis. Após aprovação, terá acesso imediato a todos os nossos serviços.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="this.closest('.faq-item').classList.toggle('open')">
+            Qual é o capital social mínimo para ser membro?
+            <div class="faq-toggle">+</div>
+          </div>
+          <div class="faq-answer">O capital social mínimo de entrada é de 50€, representado por 1 quota de 50€. Pode adquirir quotas adicionais a qualquer momento. Cada membro tem direito a 1 voto na Assembleia Geral, independentemente do número de quotas detidas.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="this.closest('.faq-item').classList.toggle('open')">
+            As minhas poupanças estão protegidas?
+            <div class="faq-toggle">+</div>
+          </div>
+          <div class="faq-answer">Sim. A MALUA participa no Fundo de Garantia do Crédito Agrícola Mútuo, que garante os depósitos até 100.000€ por titular. Adicionalmente, todos os nossos processos são regulados pelo Banco de Portugal.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="this.closest('.faq-item').classList.toggle('open')">
+            Como funciona o pedido de crédito pessoal?
+            <div class="faq-toggle">+</div>
+          </div>
+          <div class="faq-answer">Pode iniciar o pedido online, na app ou presencialmente. Precisará de comprovativos de rendimentos dos últimos 3 meses, documento de identificação e NIB. A análise demora entre 24 a 48 horas para membros com conta ativa. Se aprovado, o montante é creditado na conta em 1 dia útil.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="this.closest('.faq-item').classList.toggle('open')">
+            Posso transferir dinheiro gratuitamente?
+            <div class="faq-toggle">+</div>
+          </div>
+          <div class="faq-answer">As transferências SEPA (para qualquer banco na zona euro) são gratuitas para contas digitais MALUA. As transferências internacionais para fora da zona SEPA estão sujeitas às comissões previstas no Tarifário de Serviços disponível na secção Documentos.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="this.closest('.faq-item').classList.toggle('open')">
+            Esqueci-me da minha palavra-passe da área privada. O que faço?
+            <div class="faq-toggle">+</div>
+          </div>
+          <div class="faq-answer">No ecrã de login, clique em "Esqueceu a palavra-passe?". Receberá um email com instruções para redefinir a sua palavra-passe. Se não receber o email em 5 minutos, verifique a pasta de spam. Se o problema persistir, contacte o nosso apoio ao cliente pelo 21 345 6789.</div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:60px;padding:48px;background:var(--cream);border-radius:20px;">
+      <div style="font-size:32px;margin-bottom:12px;">💬</div>
+      <h3 style="font-family:'DM Serif Display',serif;font-size:26px;color:var(--navy);font-weight:400;margin-bottom:8px;">Não encontrou o que procurava?</h3>
+      <p style="color:var(--muted);margin-bottom:24px;">A nossa equipa está disponível para responder a todas as suas questões.</p>
+      <a class="btn-primary" onclick="showPage('contacto')">Contactar Apoio ao Cliente</a>
+    </div>
+  </div>
+  <footer style="background:var(--navy);color:white;padding:30px 80px;text-align:center;">
+    <p style="font-size:13px;color:rgba(255,255,255,0.35);">© 2026 MALUA — Cooperativa de Poupança e Crédito</p>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE: SIMULADORES
+════════════════════════════════════════ -->
+<div id="page-simuladores" class="page">
+  <div class="page-header">
+    <div class="page-header-pattern"></div>
+    <div class="page-header-inner">
+      <div class="breadcrumb"><a onclick="showPage('home')">Início</a> <span>›</span> <span>Simuladores</span></div>
+      <h1><em>Simule</em> antes de decidir</h1>
+      <p>Calcule as condições de crédito ou retorno das suas poupanças de forma rápida e transparente.</p>
+    </div>
+  </div>
+  <div class="section">
+    <div class="sim-tabs">
+      <button class="sim-tab active" onclick="switchSim(this,'sim-credito')">Crédito Pessoal</button>
+      <button class="sim-tab" onclick="switchSim(this,'sim-habitacao')">Crédito Habitação</button>
+      <button class="sim-tab" onclick="switchSim(this,'sim-poupanca')">Poupança</button>
+    </div>
+
+    <!-- Crédito Pessoal -->
+    <div id="sim-credito" class="sim-content">
+      <div class="sim-layout">
+        <div class="sim-form">
+          <h3>Crédito Pessoal</h3>
+          <div class="form-group">
+            <label>Montante desejado: <strong id="lbl-montante" style="color:var(--navy)">5.000 €</strong></label>
+            <input type="range" class="range-input" min="500" max="30000" step="500" value="5000"
+              oninput="document.getElementById('lbl-montante').textContent=Number(this.value).toLocaleString('pt-PT')+' €';calcCredito()">
+            <div class="range-labels"><span>500 €</span><span>30.000 €</span></div>
+          </div>
+          <div class="form-group">
+            <label>Prazo de reembolso: <strong id="lbl-prazo" style="color:var(--navy)">36 meses</strong></label>
+            <input type="range" class="range-input" min="12" max="84" step="6" value="36"
+              oninput="document.getElementById('lbl-prazo').textContent=this.value+' meses';calcCredito()">
+            <div class="range-labels"><span>12 meses</span><span>84 meses</span></div>
+          </div>
+          <div class="form-group">
+            <label>Taxa de Juro (TAN)</label>
+            <select onchange="calcCredito()" id="sel-taxa">
+              <option value="3.2">3,2% — Membro ativo</option>
+              <option value="4.0">4,0% — Novo membro</option>
+              <option value="4.5">4,5% — Taxa padrão</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Finalidade</label>
+            <select>
+              <option>Consumo geral</option>
+              <option>Educação</option>
+              <option>Saúde</option>
+              <option>Obras/Remodelação</option>
+              <option>Outro</option>
+            </select>
+          </div>
+          <div style="padding:16px;background:rgba(0,36,76,0.04);border-radius:10px;font-size:13px;color:var(--muted);line-height:1.7;margin-top:8px;">
+            💡 Simulação meramente indicativa. Sujeita a análise e aprovação de crédito. TAEG inclui seguro de vida e comissões.
+          </div>
+        </div>
+        <div class="sim-result">
+          <h3>Resumo da Simulação</h3>
+          <div class="result-amount" id="res-prestacao">152,18 €</div>
+          <div class="result-label">Prestação mensal estimada</div>
+          <div class="result-breakdown">
+            <div class="result-row"><span class="result-key">Montante solicitado</span><span class="result-val" id="res-montante">5.000,00 €</span></div>
+            <div class="result-row"><span class="result-key">Prazo</span><span class="result-val" id="res-prazo">36 meses</span></div>
+            <div class="result-row"><span class="result-key">TAN</span><span class="result-val" id="res-tan">3,2%</span></div>
+            <div class="result-row"><span class="result-key">TAEG estimada</span><span class="result-val" id="res-taeg">4,1%</span></div>
+            <div class="result-row"><span class="result-key">Montante total a pagar</span><span class="result-val" id="res-total">5.478,48 €</span></div>
+            <div class="result-row"><span class="result-key">Custo total do crédito</span><span class="result-val" id="res-custo">478,48 €</span></div>
+          </div>
+          <button class="btn-primary" style="width:100%;margin-top:28px;background:var(--red);border-color:var(--red);" onclick="showPage('contacto')">
+            Solicitar Este Crédito
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Habitação (placeholder) -->
+    <div id="sim-habitacao" class="sim-content" style="display:none;">
+      <div class="sim-layout">
+        <div class="sim-form">
+          <h3>Crédito Habitação</h3>
+          <div class="form-group"><label>Valor do imóvel: <strong>150.000 €</strong></label><input type="range" class="range-input" min="50000" max="500000" step="5000" value="150000"><div class="range-labels"><span>50k €</span><span>500k €</span></div></div>
+          <div class="form-group"><label>Entrada inicial: <strong>30.000 €</strong></label><input type="range" class="range-input" min="0" max="100000" step="1000" value="30000"><div class="range-labels"><span>0 €</span><span>100k €</span></div></div>
+          <div class="form-group"><label>Prazo: <strong>30 anos</strong></label><input type="range" class="range-input" min="5" max="40" step="5" value="30"><div class="range-labels"><span>5 anos</span><span>40 anos</span></div></div>
+          <div class="form-group"><label>Tipo de taxa</label><select><option>Variável (Euribor 6M + 1,2%)</option><option>Mista (5 anos fixa + variável)</option></select></div>
+        </div>
+        <div class="sim-result">
+          <h3>Estimativa</h3>
+          <div class="result-amount">587 €</div>
+          <div class="result-label">Prestação mensal estimada</div>
+          <div class="result-breakdown">
+            <div class="result-row"><span class="result-key">Capital financiado</span><span class="result-val">120.000 €</span></div>
+            <div class="result-row"><span class="result-key">Prazo</span><span class="result-val">30 anos</span></div>
+            <div class="result-row"><span class="result-key">Taxa inicial</span><span class="result-val">Euribor + 1,2%</span></div>
+          </div>
+          <button class="btn-primary" style="width:100%;margin-top:28px;background:var(--red);" onclick="showPage('contacto')">Pedir Proposta</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Poupança (placeholder) -->
+    <div id="sim-poupanca" class="sim-content" style="display:none;">
+      <div class="sim-layout">
+        <div class="sim-form">
+          <h3>Simulador de Poupança</h3>
+          <div class="form-group"><label>Capital inicial: <strong>2.000 €</strong></label><input type="range" class="range-input" min="100" max="50000" step="100" value="2000"><div class="range-labels"><span>100 €</span><span>50k €</span></div></div>
+          <div class="form-group"><label>Depósito mensal: <strong>100 €</strong></label><input type="range" class="range-input" min="0" max="1000" step="25" value="100"><div class="range-labels"><span>0 €</span><span>1.000 €</span></div></div>
+          <div class="form-group"><label>Prazo: <strong>5 anos</strong></label><input type="range" class="range-input" min="1" max="30" step="1" value="5"><div class="range-labels"><span>1 ano</span><span>30 anos</span></div></div>
+          <div class="form-group"><label>Produto</label><select><option>Conta Poupança Flexível (3,0%)</option><option>Depósito a Prazo 1 ano (3,5%)</option><option>Depósito a Prazo 3 anos (4,0%)</option></select></div>
+        </div>
+        <div class="sim-result">
+          <h3>Projeção de Poupança</h3>
+          <div class="result-amount">10.628 €</div>
+          <div class="result-label">Saldo projetado ao final do prazo</div>
+          <div class="result-breakdown">
+            <div class="result-row"><span class="result-key">Capital investido</span><span class="result-val">8.000 €</span></div>
+            <div class="result-row"><span class="result-key">Juros gerados</span><span class="result-val">2.628 €</span></div>
+            <div class="result-row"><span class="result-key">Taxa anual</span><span class="result-val">3,0% TAE</span></div>
+          </div>
+          <button class="btn-primary" style="width:100%;margin-top:28px;background:var(--red);" onclick="showPage('contacto')">Abrir Conta Poupança</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer style="background:var(--navy);color:white;padding:30px 80px;text-align:center;">
+    <p style="font-size:13px;color:rgba(255,255,255,0.35);">© 2026 MALUA — Cooperativa de Poupança e Crédito</p>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE: ÁREA PRIVADA
+════════════════════════════════════════ -->
+<div id="page-area-privada" class="page">
+  <div class="login-wrapper">
+    <div class="login-left">
+      <div class="login-left-pattern"></div>
+      <div class="login-left-content">
+        <div class="nav-logo" style="cursor:default;margin-bottom:40px;">
+          <div class="nav-logo-mark">M</div>
+          <div class="nav-logo-text">
+            <span style="color:white;">MALUA</span>
+            <span style="color:rgba(255,255,255,0.4);">Cooperativa de Poupança e Crédito</span>
+          </div>
+        </div>
+        <h2>Bem-vindo à sua <em>Área Privada</em></h2>
+        <p>Aceda às suas contas, movimentos, créditos e muito mais — de forma segura, a qualquer hora.</p>
+        <div class="login-features">
+          <div class="login-feature"><span class="login-feature-icon">📊</span><span>Consultar saldos e movimentos em tempo real</span></div>
+          <div class="login-feature"><span class="login-feature-icon">💸</span><span>Realizar transferências e pagamentos</span></div>
+          <div class="login-feature"><span class="login-feature-icon">📄</span><span>Aceder a extratos e documentação</span></div>
+          <div class="login-feature"><span class="login-feature-icon">🔔</span><span>Gerir alertas e notificações</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="login-right">
+      <div class="login-form-box">
+        <h2>Iniciar sessão</h2>
+        <p>Introduza as suas credenciais de acesso</p>
+        <div class="form-group"><label>Número de membro / NIF</label><input type="text" placeholder="Ex: 123456789"></div>
+        <div class="form-group">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
+            <label style="margin:0;">Palavra-passe</label>
+            <a href="#" class="forgot-link">Esqueceu?</a>
+          </div>
+          <input type="password" placeholder="••••••••">
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:24px;">
+          <input type="checkbox" id="remember" style="width:16px;height:16px;">
+          <label for="remember" style="font-size:13.5px;color:var(--muted);font-weight:400;margin:0;">Manter sessão iniciada</label>
+        </div>
+        <button class="btn-submit">Entrar na Área Privada</button>
+        <div class="divider"><span>ou</span></div>
+        <button style="width:100%;padding:13px;border:1.5px solid var(--border);background:white;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;color:var(--navy);transition:all 0.2s;" onmouseover="this.style.borderColor='var(--navy)'" onmouseout="this.style.borderColor='var(--border)'">
+          🔑 Autenticação por Chave Móvel Digital
+        </button>
+        <p style="text-align:center;margin-top:28px;font-size:14px;color:var(--muted);">
+          Não é membro? <a href="#" onclick="showPage('contacto')" style="color:var(--red);text-decoration:none;font-weight:600;">Aderir à cooperativa →</a>
+        </p>
+        <div style="margin-top:32px;padding:14px;background:var(--cream);border-radius:10px;display:flex;align-items:center;gap:10px;">
+          <span style="font-size:18px;">🔒</span>
+          <span style="font-size:12.5px;color:var(--muted);line-height:1.5;">Ligação segura SSL/TLS. Os seus dados estão protegidos e encriptados.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE: PESQUISA
+════════════════════════════════════════ -->
+<div id="page-pesquisa" class="page">
+  <div class="search-hero">
+    <div style="text-align:center;margin-bottom:32px;">
+      <div class="section-tag">Pesquisar</div>
+      <h1 style="font-family:'DM Serif Display',serif;font-size:clamp(32px,4vw,48px);color:var(--navy);font-weight:400;">O que está a procurar?</h1>
+    </div>
+    <div class="search-bar-lg">
+      <input type="text" id="search-input" placeholder="Pesquisar serviços, notícias, documentos…" value="crédito pessoal">
+      <button>⌕</button>
+    </div>
+    <div class="search-filters">
+      <button class="filter-btn active">Todos os resultados</button>
+      <button class="filter-btn">Serviços</button>
+      <button class="filter-btn">Notícias</button>
+      <button class="filter-btn">Documentos</button>
+      <button class="filter-btn">FAQ</button>
+    </div>
+  </div>
+  <div class="section">
+    <div style="margin-bottom:20px;font-size:14px;color:var(--muted);">7 resultados para <strong style="color:var(--navy);">"crédito pessoal"</strong></div>
+    <div class="search-results-grid">
+      <div class="search-sidebar">
+        <h4>Refinar resultados</h4>
+        <div class="filter-btn active" style="margin-bottom:8px;display:block;text-align:left;border-radius:8px;">Relevância</div>
+        <div class="filter-btn" style="margin-bottom:8px;display:block;text-align:left;border-radius:8px;">Mais recentes</div>
+        <div style="margin-top:24px;">
+          <h4>Tipo de conteúdo</h4>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px;">
+            <label style="display:flex;align-items:center;gap:8px;font-size:14px;color:var(--navy);cursor:pointer;"><input type="checkbox" checked> Serviços (3)</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:14px;color:var(--navy);cursor:pointer;"><input type="checkbox" checked> FAQ (2)</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:14px;color:var(--navy);cursor:pointer;"><input type="checkbox" checked> Documentos (2)</label>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="search-result-item" onclick="showPage('servicos')">
+          <div class="result-type">Serviço</div>
+          <h3><mark>Crédito Pessoal</mark> MALUA</h3>
+          <p>De 500€ a 30.000€, com prazos de 12 a 84 meses. Aprovação rápida para membros com conta ativa. Taxa a partir de 3,2% TAEG.</p>
+        </div>
+        <div class="search-result-item" onclick="showPage('simuladores')">
+          <div class="result-type">Ferramenta</div>
+          <h3>Simulador de <mark>Crédito Pessoal</mark></h3>
+          <p>Simule a sua prestação mensal e o custo total do crédito de forma rápida e sem compromisso.</p>
+        </div>
+        <div class="search-result-item" onclick="showPage('faq')">
+          <div class="result-type">FAQ</div>
+          <h3>Como funciona o pedido de <mark>crédito pessoal</mark>?</h3>
+          <p>Pode iniciar o pedido online, na app ou presencialmente. Precisará de comprovativos de rendimentos dos últimos 3 meses…</p>
+        </div>
+        <div class="search-result-item" onclick="showPage('documentos')">
+          <div class="result-type">Documento</div>
+          <h3>Formulário de Pedido de <mark>Crédito Pessoal</mark></h3>
+          <p>Formulário editável para entrega presencial ou por email. Formato DOCX — 128 KB</p>
+        </div>
+        <div class="search-result-item" onclick="showPage('documentos')">
+          <div class="result-type">Documento</div>
+          <h3>Regulamento Interno de Crédito</h3>
+          <p>Normas e critérios de análise e concessão de <mark>crédito</mark> da cooperativa. PDF — 1,2 MB</p>
+        </div>
+        <div class="search-result-item" onclick="showPage('noticias')">
+          <div class="result-type">Notícia</div>
+          <h3>Promoção de Fevereiro: taxa reduzida no <mark>crédito pessoal</mark></h3>
+          <p>MALUA lança campanha de crédito com TAEG especial de 3,2% para créditos aprovados até 28/02/2026.</p>
+        </div>
+        <div class="search-result-item" onclick="showPage('faq')">
+          <div class="result-type">FAQ</div>
+          <h3>Quais os documentos necessários para pedir <mark>crédito</mark>?</h3>
+          <p>Documento de identificação, comprovativo de morada, últimos 3 recibos de vencimento ou IRS…</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer style="background:var(--navy);color:white;padding:30px 80px;text-align:center;">
+    <p style="font-size:13px;color:rgba(255,255,255,0.35);">© 2026 MALUA — Cooperativa de Poupança e Crédito</p>
+  </footer>
+</div>
+
+<script>
+// ─── Navigation ───
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  const navEl = document.getElementById('nav-' + id);
+  if (navEl) navEl.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ─── Nav scroll ───
+window.addEventListener('scroll', () => {
+  document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 10);
+});
+
+// ─── Simulator tabs ───
+function switchSim(btn, id) {
+  btn.closest('.sim-tabs').querySelectorAll('.sim-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.sim-content').forEach(c => c.style.display = 'none');
+  document.getElementById(id).style.display = 'block';
+}
+
+// ─── Loan Calculator ───
+function calcCredito() {
+  const montanteEl = document.querySelector('#sim-credito input[type="range"]:first-of-type');
+  const prazoEl = document.querySelectorAll('#sim-credito input[type="range"]')[1];
+  const taxaEl = document.getElementById('sel-taxa');
+  if (!montanteEl) return;
+  const P = parseFloat(montanteEl.value);
+  const n = parseInt(prazoEl.value);
+  const r = parseFloat(taxaEl.value) / 100 / 12;
+  const pmt = P * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
+  const total = pmt * n;
+  const fmt = v => v.toLocaleString('pt-PT', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €';
+  document.getElementById('res-prestacao').textContent = fmt(pmt);
+  document.getElementById('res-montante').textContent = fmt(P);
+  document.getElementById('res-prazo').textContent = n + ' meses';
+  document.getElementById('res-tan').textContent = parseFloat(taxaEl.value).toFixed(1) + '%';
+  document.getElementById('res-taeg').textContent = (parseFloat(taxaEl.value) + 0.9).toFixed(1) + '%';
+  document.getElementById('res-total').textContent = fmt(total);
+  document.getElementById('res-custo').textContent = fmt(total - P);
+}
+
+// ─── FAQ toggle ───
+document.querySelectorAll('.faq-question').forEach(q => {
+  q.onclick = function() {
+    this.closest('.faq-item').classList.toggle('open');
+  };
+});
+
+// ─── Filter buttons ───
+document.querySelectorAll('.doc-filters').forEach(group => {
+  group.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.onclick = function() {
+      this.closest('.doc-filters').querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+    };
+  });
+});
+
+// Init
+calcCredito();
+</script>
+</body>
+</html>
