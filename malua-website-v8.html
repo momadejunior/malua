@@ -1,0 +1,2327 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MALUA — Cooperativa de Poupança e Crédito</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #782423;
+    --navy: #00244c;
+    --red-light: #9a3130;
+    --navy-light: #003a7a;
+    --cream: #f8f4ef;
+    --warm-white: #fdfaf7;
+    --gold: #c9a84c;
+    --text: #1a1a2e;
+    --muted: #6b7280;
+    --border: rgba(0,36,76,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--warm-white);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ─── PAGE SYSTEM ─── */
+  .page { display: none; min-height: 100vh; }
+  .page.active { display: block; }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: rgba(253,250,247,0.97);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    height: 72px;
+    display: flex; align-items: center; justify-content: space-between;
+    transition: box-shadow 0.3s;
+  }
+  nav.scrolled { box-shadow: 0 4px 30px rgba(0,36,76,0.08); }
+
+  .nav-logo {
+    display: flex; align-items: center; gap: 12px; cursor: pointer;
+    text-decoration: none;
+  }
+  .nav-logo-mark {
+    width: 40px; height: 40px;
+    background: var(--navy);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 20px; font-weight: 900;
+    color: white; letter-spacing: -1px;
+    position: relative; overflow: hidden;
+  }
+  .nav-logo-mark::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 4px; background: var(--red);
+  }
+  .nav-logo-text { line-height: 1.1; }
+  .nav-logo-text span:first-child {
+    display: block;
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px; font-weight: 400;
+    color: var(--navy); letter-spacing: 0.5px;
+  }
+  .nav-logo-text span:last-child {
+    display: block; font-size: 10px; color: var(--muted);
+    letter-spacing: 0.8px; text-transform: uppercase;
+  }
+
+  .nav-links {
+    display: flex; align-items: center; gap: 4px; list-style: none;
+  }
+  .nav-links a {
+    display: block; padding: 8px 14px;
+    font-size: 13.5px; font-weight: 500;
+    color: var(--navy); text-decoration: none;
+    border-radius: 6px; transition: all 0.2s;
+    letter-spacing: 0.2px;
+  }
+  .nav-links a:hover { background: rgba(0,36,76,0.06); }
+  .nav-links a.active { color: var(--red); background: rgba(120,36,35,0.06); }
+
+  .nav-actions { display: flex; align-items: center; gap: 10px; }
+  .btn-search {
+    width: 36px; height: 36px; border: none; background: transparent;
+    cursor: pointer; border-radius: 8px; color: var(--navy);
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+  }
+  .btn-search:hover { background: rgba(0,36,76,0.06); }
+  .btn-area-privada {
+    padding: 9px 20px;
+    background: var(--navy); color: white;
+    border: none; border-radius: 8px; cursor: pointer;
+    font-size: 13px; font-weight: 600; font-family: 'DM Sans', sans-serif;
+    transition: background 0.2s; text-decoration: none; display: block;
+  }
+  .btn-area-privada:hover { background: var(--navy-light); }
+
+  /* ─── HERO HOME ─── */
+  .hero {
+    min-height: 100vh;
+    display: grid; grid-template-columns: 1fr 1fr;
+    padding-top: 72px; overflow: hidden;
+  }
+  .hero-left {
+    display: flex; flex-direction: column;
+    justify-content: center; padding: 80px 60px 80px 80px;
+    position: relative; z-index: 2;
+  }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(120,36,35,0.08); color: var(--red);
+    padding: 6px 14px; border-radius: 20px;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.8px;
+    text-transform: uppercase; margin-bottom: 28px; width: fit-content;
+  }
+  .hero-tag::before {
+    content: ''; width: 6px; height: 6px; background: var(--red);
+    border-radius: 50%; animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.5); }
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(42px, 5vw, 62px);
+    font-weight: 400; line-height: 1.12;
+    color: var(--navy); margin-bottom: 24px;
+    letter-spacing: -0.5px;
+  }
+  .hero h1 em {
+    font-style: italic; color: var(--red);
+  }
+  .hero p {
+    font-size: 17px; line-height: 1.7; color: #4b5563;
+    max-width: 420px; margin-bottom: 40px;
+  }
+  .hero-actions { display: flex; gap: 14px; align-items: center; }
+  .btn-primary {
+    padding: 14px 28px; background: var(--navy); color: white;
+    border: none; border-radius: 10px; cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 600;
+    transition: all 0.2s; text-decoration: none; display: inline-block;
+  }
+  .btn-primary:hover { background: var(--navy-light); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,36,76,0.2); }
+  .btn-secondary {
+    padding: 14px 28px; background: transparent; color: var(--navy);
+    border: 1.5px solid rgba(0,36,76,0.25); border-radius: 10px; cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 500;
+    transition: all 0.2s; text-decoration: none; display: inline-block;
+  }
+  .btn-secondary:hover { border-color: var(--navy); background: rgba(0,36,76,0.04); }
+
+  .hero-stats {
+    display: flex; gap: 40px; margin-top: 56px;
+    padding-top: 40px; border-top: 1px solid var(--border);
+  }
+  .stat-item { text-align: left; }
+  .stat-number {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px; color: var(--navy); line-height: 1;
+  }
+  .stat-number span { color: var(--red); }
+  .stat-label { font-size: 12px; color: var(--muted); margin-top: 4px; letter-spacing: 0.3px; }
+
+  .hero-right {
+    background: var(--navy);
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hero-right::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(0,36,76,0.88) 0%, rgba(0,24,51,0.92) 100%), url('https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=900&q=80') center/cover;
+  }
+  .hero-pattern {
+    position: absolute; inset: 0;
+    opacity: 0.06;
+    background-image: repeating-linear-gradient(
+      45deg, white 0, white 1px, transparent 0, transparent 50%);
+    background-size: 20px 20px;
+  }
+  .hero-card-stack {
+    position: relative; z-index: 2;
+    width: 340px;
+  }
+  .bank-card {
+    width: 100%; aspect-ratio: 1.586/1;
+    border-radius: 16px;
+    padding: 24px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    font-family: 'DM Mono', 'Courier New', monospace;
+  }
+  .bank-card.card-main {
+    background: linear-gradient(135deg, var(--red) 0%, #5a1b1a 100%);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+    color: white;
+  }
+  .bank-card.card-back {
+    background: linear-gradient(135deg, #1a3a6e 0%, #0f2347 100%);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    color: white; transform: translateY(20px) translateX(-16px) rotate(-3deg);
+    position: absolute; bottom: -40px; right: -20px; width: 90%;
+  }
+  .card-chip {
+    width: 38px; height: 28px;
+    background: linear-gradient(135deg, var(--gold) 0%, #a8871f 100%);
+    border-radius: 6px;
+  }
+  .card-logo-small {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px; font-weight: 900; letter-spacing: -0.5px;
+  }
+  .card-number { font-size: 14px; letter-spacing: 2px; opacity: 0.85; }
+  .card-footer { display: flex; justify-content: space-between; align-items: flex-end; }
+  .card-name { font-size: 11px; letter-spacing: 1px; opacity: 0.8; }
+
+  /* ─── SECTIONS ─── */
+  .section { padding: 100px 80px; }
+  .section-sm { padding: 60px 80px; }
+  .section-tag {
+    display: inline-block; font-size: 11px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--red); margin-bottom: 16px;
+  }
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(32px, 4vw, 48px); font-weight: 400;
+    color: var(--navy); line-height: 1.15; letter-spacing: -0.3px;
+    margin-bottom: 16px;
+  }
+  .section-title em { font-style: italic; }
+  .section-subtitle {
+    font-size: 17px; color: var(--muted); line-height: 1.7;
+    max-width: 560px;
+  }
+  .section-header { margin-bottom: 56px; }
+  .section-header.centered { text-align: center; }
+  .section-header.centered .section-subtitle { margin: 0 auto; }
+
+  /* ─── SERVICES GRID ─── */
+  .services-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  }
+  .service-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px; padding: 32px;
+    transition: all 0.3s; cursor: pointer;
+    position: relative; overflow: hidden;
+  }
+  .service-card::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+    background: var(--navy); transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .service-card:hover::before { transform: scaleX(1); }
+  .service-card:hover { box-shadow: 0 16px 48px rgba(0,36,76,0.1); transform: translateY(-4px); }
+  .service-icon {
+    width: 52px; height: 52px; border-radius: 14px;
+    background: rgba(0,36,76,0.06); color: var(--navy);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; margin-bottom: 20px;
+  }
+  .service-card h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px; color: var(--navy);
+    margin-bottom: 10px; font-weight: 400;
+  }
+  .service-card p { font-size: 14.5px; color: var(--muted); line-height: 1.6; }
+  .service-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--red); font-size: 13.5px; font-weight: 600;
+    margin-top: 20px; text-decoration: none;
+    transition: gap 0.2s;
+  }
+  .service-link:hover { gap: 10px; }
+
+  /* ─── NEWS GRID ─── */
+  .news-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 24px; }
+  .news-card {
+    background: white; border: 1px solid var(--border);
+    border-radius: 16px; overflow: hidden;
+    transition: box-shadow 0.3s, transform 0.3s; cursor: pointer;
+  }
+  .news-card:hover { box-shadow: 0 16px 48px rgba(0,36,76,0.1); transform: translateY(-4px); }
+  .news-image {
+    width: 100%; aspect-ratio: 16/9;
+    background: var(--navy);
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .news-image.red-bg { background: var(--red); }
+  .news-image-icon { font-size: 48px; opacity: 0.3; }
+  .news-image-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 60%);
+  }
+  .news-category {
+    position: absolute; top: 14px; left: 14px;
+    background: var(--red); color: white;
+    font-size: 10px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; padding: 4px 10px; border-radius: 20px;
+  }
+  .news-body { padding: 22px; }
+  .news-date { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+  .news-body h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px; font-weight: 400; color: var(--navy);
+    line-height: 1.3; margin-bottom: 10px;
+  }
+  .news-body p { font-size: 13.5px; color: var(--muted); line-height: 1.6; }
+
+  /* ─── PAGE HEADER ─── */
+  .page-header {
+    background: var(--navy); padding: 120px 80px 64px;
+    position: relative; overflow: hidden;
+  }
+  .page-header::after {
+    content: ''; position: absolute;
+    bottom: 0; left: 0; right: 0; height: 80px;
+    background: var(--warm-white);
+    clip-path: ellipse(55% 100% at 50% 100%);
+  }
+  .page-header-pattern {
+    position: absolute; inset: 0; opacity: 0.04;
+    background-image: repeating-linear-gradient(
+      45deg, white 0, white 1px, transparent 0, transparent 50%);
+    background-size: 24px 24px;
+  }
+  .page-header-inner { position: relative; z-index: 2; }
+  .breadcrumb {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: rgba(255,255,255,0.5);
+    margin-bottom: 20px; letter-spacing: 0.3px;
+  }
+  .breadcrumb span { color: rgba(255,255,255,0.8); }
+  .breadcrumb a { color: rgba(255,255,255,0.5); text-decoration: none; cursor: pointer; }
+  .breadcrumb a:hover { color: rgba(255,255,255,0.8); }
+  .page-header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(36px, 5vw, 56px); font-weight: 400;
+    color: white; line-height: 1.1; letter-spacing: -0.5px;
+  }
+  .page-header h1 em { font-style: italic; color: rgba(201,168,76,0.9); }
+  .page-header p {
+    font-size: 17px; color: rgba(255,255,255,0.65);
+    line-height: 1.7; max-width: 600px; margin-top: 16px;
+  }
+
+  /* ─── INSTITUCIONAL ─── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .feature-list { list-style: none; margin-top: 24px; }
+  .feature-list li {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 14px 0; border-bottom: 1px solid var(--border);
+    font-size: 15px; color: #374151; line-height: 1.5;
+  }
+  .feature-list li::before {
+    content: '✓'; width: 22px; height: 22px;
+    background: rgba(120,36,35,0.1); color: var(--red);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  .values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 40px; }
+  .value-card {
+    background: white; border: 1px solid var(--border); border-radius: 14px;
+    padding: 28px; text-align: center;
+  }
+  .value-icon { font-size: 32px; margin-bottom: 12px; }
+  .value-card h4 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px; color: var(--navy); margin-bottom: 8px; font-weight: 400;
+  }
+  .value-card p { font-size: 13.5px; color: var(--muted); line-height: 1.6; }
+
+  /* ─── SERVIÇOS FULL ─── */
+  .services-full-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .service-full-card {
+    background: white; border: 1px solid var(--border); border-radius: 16px;
+    padding: 36px; display: flex; gap: 24px;
+    transition: all 0.3s; cursor: pointer;
+  }
+  .service-full-card:hover { box-shadow: 0 16px 48px rgba(0,36,76,0.08); transform: translateY(-2px); }
+  .service-full-icon {
+    width: 60px; height: 60px; border-radius: 16px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 26px;
+  }
+  .icon-navy { background: rgba(0,36,76,0.07); }
+  .icon-red { background: rgba(120,36,35,0.07); }
+  .service-full-body h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 21px; color: var(--navy); font-weight: 400; margin-bottom: 8px;
+  }
+  .service-full-body p { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 14px; }
+  .service-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tag {
+    padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500;
+    background: rgba(0,36,76,0.06); color: var(--navy);
+  }
+  .tag.red { background: rgba(120,36,35,0.07); color: var(--red); }
+
+  /* ─── DOCUMENTOS ─── */
+  .doc-filters {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 32px;
+  }
+  .filter-btn {
+    padding: 8px 18px; border-radius: 20px; border: 1px solid var(--border);
+    background: white; color: var(--navy); font-size: 13px; font-weight: 500;
+    cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+  }
+  .filter-btn.active { background: var(--navy); color: white; border-color: var(--navy); }
+  .filter-btn:hover:not(.active) { border-color: var(--navy); background: rgba(0,36,76,0.04); }
+
+  .docs-list { display: flex; flex-direction: column; gap: 12px; }
+  .doc-item {
+    background: white; border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px 24px; display: flex; align-items: center; gap: 20px;
+    transition: all 0.2s; cursor: pointer;
+  }
+  .doc-item:hover { box-shadow: 0 8px 24px rgba(0,36,76,0.08); border-color: rgba(0,36,76,0.2); }
+  .doc-type {
+    width: 48px; height: 48px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 800; letter-spacing: 0.5px; flex-shrink: 0;
+  }
+  .doc-type.pdf { background: rgba(220,38,38,0.1); color: #dc2626; }
+  .doc-type.xlsx { background: rgba(21,128,61,0.1); color: #15803d; }
+  .doc-type.docx { background: rgba(37,99,235,0.1); color: #2563eb; }
+  .doc-info { flex: 1; }
+  .doc-info h4 { font-size: 15px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+  .doc-info p { font-size: 12.5px; color: var(--muted); }
+  .doc-meta { text-align: right; }
+  .doc-date { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  .doc-size { font-size: 11px; color: var(--muted); }
+  .btn-download {
+    padding: 8px 16px; background: rgba(0,36,76,0.07); color: var(--navy);
+    border: none; border-radius: 8px; cursor: pointer; font-size: 13px;
+    font-weight: 600; font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+  }
+  .btn-download:hover { background: var(--navy); color: white; }
+
+  /* ─── CONTACTO ─── */
+  .contact-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 60px; }
+  .contact-info { display: flex; flex-direction: column; gap: 28px; }
+  .contact-card {
+    background: white; border: 1px solid var(--border); border-radius: 14px;
+    padding: 24px; display: flex; gap: 18px; align-items: flex-start;
+  }
+  .contact-icon {
+    width: 46px; height: 46px; border-radius: 12px; flex-shrink: 0;
+    background: rgba(0,36,76,0.07); display: flex; align-items: center;
+    justify-content: center; font-size: 20px;
+  }
+  .contact-card h4 { font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+  .contact-card p { font-size: 14px; color: var(--muted); line-height: 1.5; }
+
+  .form-group { margin-bottom: 20px; }
+  label { display: block; font-size: 13.5px; font-weight: 600; color: var(--navy); margin-bottom: 7px; }
+  input, select, textarea {
+    width: 100%; padding: 12px 16px;
+    border: 1.5px solid var(--border); border-radius: 10px;
+    font-family: 'DM Sans', sans-serif; font-size: 15px;
+    color: var(--text); background: white;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--navy);
+    box-shadow: 0 0 0 3px rgba(0,36,76,0.08);
+  }
+  textarea { resize: vertical; min-height: 120px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .btn-submit {
+    width: 100%; padding: 15px; background: var(--navy); color: white;
+    border: none; border-radius: 10px; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600;
+    transition: all 0.2s;
+  }
+  .btn-submit:hover { background: var(--navy-light); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,36,76,0.2); }
+
+  /* ─── FAQ ─── */
+  .faq-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 60px; }
+  .faq-categories { display: flex; flex-direction: column; gap: 8px; position: sticky; top: 100px; }
+  .faq-cat-btn {
+    padding: 12px 18px; border-radius: 10px; border: 1px solid var(--border);
+    background: white; text-align: left; cursor: pointer;
+    font-size: 14px; font-weight: 500; color: var(--navy);
+    font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+  }
+  .faq-cat-btn.active { background: var(--navy); color: white; border-color: var(--navy); }
+  .faq-cat-btn:hover:not(.active) { background: rgba(0,36,76,0.04); }
+
+  .faq-list { display: flex; flex-direction: column; gap: 12px; }
+  .faq-item {
+    background: white; border: 1px solid var(--border); border-radius: 14px;
+    overflow: hidden; transition: box-shadow 0.2s;
+  }
+  .faq-item:hover { box-shadow: 0 4px 16px rgba(0,36,76,0.07); }
+  .faq-question {
+    padding: 22px 24px; cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 15px; font-weight: 600; color: var(--navy);
+  }
+  .faq-toggle {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: rgba(0,36,76,0.07); display: flex; align-items: center; justify-content: center;
+    font-size: 18px; color: var(--navy); flex-shrink: 0;
+    transition: all 0.2s; font-weight: 300;
+  }
+  .faq-item.open .faq-toggle { background: var(--navy); color: white; transform: rotate(45deg); }
+  .faq-answer {
+    display: none; padding: 0 24px 22px;
+    font-size: 14.5px; color: var(--muted); line-height: 1.7;
+  }
+  .faq-item.open .faq-answer { display: block; }
+
+  /* ─── SIMULADORES ─── */
+  .sim-tabs { display: flex; gap: 4px; background: rgba(0,36,76,0.06); padding: 4px; border-radius: 12px; margin-bottom: 40px; width: fit-content; }
+  .sim-tab {
+    padding: 10px 22px; border-radius: 9px; border: none; background: transparent;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+    color: var(--navy); cursor: pointer; transition: all 0.2s;
+  }
+  .sim-tab.active { background: white; box-shadow: 0 2px 8px rgba(0,36,76,0.12); color: var(--navy); }
+  .sim-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  .sim-form { background: white; border: 1px solid var(--border); border-radius: 20px; padding: 36px; }
+  .sim-form h3 {
+    font-family: 'DM Serif Display', serif; font-size: 24px;
+    color: var(--navy); font-weight: 400; margin-bottom: 28px;
+  }
+  .range-input { width: 100%; margin-top: 8px; appearance: none; height: 4px; border-radius: 2px; background: rgba(0,36,76,0.15); outline: none; }
+  .range-input::-webkit-slider-thumb {
+    appearance: none; width: 20px; height: 20px;
+    border-radius: 50%; background: var(--navy); cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,36,76,0.3);
+  }
+  .range-labels { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .sim-result { background: var(--navy); border-radius: 20px; padding: 36px; color: white; }
+  .sim-result h3 { font-family: 'DM Serif Display', serif; font-size: 24px; font-weight: 400; margin-bottom: 28px; color: white; }
+  .result-amount { font-family: 'DM Serif Display', serif; font-size: 48px; color: var(--gold); margin-bottom: 8px; }
+  .result-label { font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 32px; }
+  .result-breakdown { display: flex; flex-direction: column; gap: 14px; }
+  .result-row { display: flex; justify-content: space-between; padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .result-row:last-child { border: none; }
+  .result-key { font-size: 14px; color: rgba(255,255,255,0.6); }
+  .result-val { font-size: 14px; font-weight: 600; color: white; }
+
+  /* ─── ÁREA PRIVADA ─── */
+  .login-wrapper {
+    min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr;
+    padding-top: 72px;
+  }
+  .login-left {
+    background: var(--navy); display: flex; flex-direction: column;
+    justify-content: center; padding: 80px;
+    position: relative; overflow: hidden;
+  }
+  .login-left::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--navy) 0%, #001533 100%);
+  }
+  .login-left-pattern {
+    position: absolute; inset: 0; opacity: 0.04;
+    background-image: repeating-linear-gradient(45deg, white 0, white 1px, transparent 0, transparent 50%);
+    background-size: 24px 24px;
+  }
+  .login-left-content { position: relative; z-index: 2; }
+  .login-left h2 {
+    font-family: 'DM Serif Display', serif; font-size: 42px;
+    color: white; font-weight: 400; line-height: 1.2; margin-bottom: 20px;
+  }
+  .login-left h2 em { font-style: italic; color: rgba(201,168,76,0.9); }
+  .login-left p { font-size: 16px; color: rgba(255,255,255,0.6); line-height: 1.7; margin-bottom: 40px; }
+  .login-features { display: flex; flex-direction: column; gap: 16px; }
+  .login-feature {
+    display: flex; align-items: center; gap: 14px;
+    padding: 16px 20px; border-radius: 12px;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+  }
+  .login-feature-icon { font-size: 22px; }
+  .login-feature span { font-size: 14px; color: rgba(255,255,255,0.8); }
+  .login-right {
+    display: flex; align-items: center; justify-content: center;
+    padding: 60px;
+  }
+  .login-form-box { width: 100%; max-width: 400px; }
+  .login-form-box h2 {
+    font-family: 'DM Serif Display', serif; font-size: 32px;
+    color: var(--navy); font-weight: 400; margin-bottom: 8px;
+  }
+  .login-form-box p { font-size: 15px; color: var(--muted); margin-bottom: 32px; }
+  .forgot-link { font-size: 13px; color: var(--red); text-decoration: none; float: right; }
+  .forgot-link:hover { text-decoration: underline; }
+  .divider { display: flex; align-items: center; gap: 16px; margin: 24px 0; }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .divider span { font-size: 12px; color: var(--muted); }
+
+  /* ─── PESQUISA ─── */
+  .search-hero { background: var(--cream); padding: 120px 80px 60px; }
+  .search-bar-lg {
+    max-width: 720px; margin: 0 auto;
+    position: relative;
+  }
+  .search-bar-lg input {
+    padding: 18px 60px 18px 24px;
+    font-size: 17px; border-radius: 16px;
+    border: 2px solid rgba(0,36,76,0.15);
+    box-shadow: 0 8px 40px rgba(0,36,76,0.1);
+  }
+  .search-bar-lg input:focus { border-color: var(--navy); }
+  .search-bar-lg button {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    width: 44px; height: 44px; background: var(--navy); color: white;
+    border: none; border-radius: 10px; cursor: pointer; font-size: 18px;
+    transition: background 0.2s;
+  }
+  .search-bar-lg button:hover { background: var(--navy-light); }
+  .search-filters { max-width: 720px; margin: 20px auto 0; display: flex; gap: 8px; }
+  .search-results-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 40px; }
+  .search-sidebar h4 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--navy); margin-bottom: 12px; }
+  .search-result-item {
+    padding: 24px; background: white; border: 1px solid var(--border);
+    border-radius: 14px; margin-bottom: 14px;
+    transition: all 0.2s; cursor: pointer;
+  }
+  .search-result-item:hover { box-shadow: 0 8px 24px rgba(0,36,76,0.08); transform: translateX(4px); }
+  .result-type { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--red); margin-bottom: 6px; }
+  .search-result-item h3 { font-size: 16px; font-weight: 600; color: var(--navy); margin-bottom: 8px; }
+  .search-result-item p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+  mark { background: rgba(120,36,35,0.12); color: var(--red); padding: 0 2px; border-radius: 2px; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--navy); color: white; padding: 60px 80px 30px;
+    margin-top: auto;
+  }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 50px; }
+  .footer-brand p { font-size: 14px; color: rgba(255,255,255,0.5); line-height: 1.7; margin-top: 16px; max-width: 240px; }
+  .footer-col h4 { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 16px; }
+  .footer-col a { display: block; color: rgba(255,255,255,0.65); font-size: 14px; text-decoration: none; margin-bottom: 10px; transition: color 0.2s; cursor: pointer; }
+  .footer-col a:hover { color: white; }
+  .footer-bottom { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 28px; display: flex; justify-content: space-between; align-items: center; }
+  .footer-bottom p { font-size: 13px; color: rgba(255,255,255,0.35); }
+  .footer-bottom-links { display: flex; gap: 20px; }
+  .footer-bottom-links a { font-size: 13px; color: rgba(255,255,255,0.35); text-decoration: none; cursor: pointer; }
+  .footer-bottom-links a:hover { color: rgba(255,255,255,0.6); }
+
+  /* ─── NOTÍCIAS PAGE ─── */
+  .news-full-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+  .news-full-card {
+    background: white; border: 1px solid var(--border); border-radius: 16px;
+    overflow: hidden; transition: all 0.3s; cursor: pointer;
+  }
+  .news-full-card:hover { box-shadow: 0 16px 48px rgba(0,36,76,0.1); transform: translateY(-6px); }
+  .news-full-image {
+    width: 100%; height: 200px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .bg-1 { background: linear-gradient(135deg, var(--navy) 0%, #1a3a6e 100%); }
+  .bg-2 { background: linear-gradient(135deg, var(--red) 0%, #5a1b1a 100%); }
+  .bg-3 { background: linear-gradient(135deg, #1a6e3a 0%, #0d3d20 100%); }
+  .bg-4 { background: linear-gradient(135deg, #6e4a1a 0%, #3d2a0d 100%); }
+  .bg-5 { background: linear-gradient(135deg, #3a1a6e 0%, #1d0d3d 100%); }
+  .bg-6 { background: linear-gradient(135deg, #6e1a4a 0%, #3d0d28 100%); }
+  .news-full-image-icon { font-size: 56px; opacity: 0.25; }
+  .news-full-body { padding: 24px; }
+  .news-meta { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; }
+  .news-cat-badge {
+    padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.5px; background: rgba(120,36,35,0.1); color: var(--red);
+  }
+  .news-full-body h3 {
+    font-family: 'DM Serif Display', serif; font-size: 19px; font-weight: 400;
+    color: var(--navy); line-height: 1.3; margin-bottom: 10px;
+  }
+  .news-full-body p { font-size: 13.5px; color: var(--muted); line-height: 1.6; }
+
+  /* ─── ALERTS / TOASTS ─── */
+  .alert-banner {
+    background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 10px; padding: 14px 20px; margin-bottom: 24px;
+    display: flex; align-items: center; gap: 12px;
+    font-size: 14px; color: #7c6510;
+  }
+
+  /* Animations */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .page.active > * { animation: fadeInUp 0.4s ease-out; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--cream); }
+  ::-webkit-scrollbar-thumb { background: rgba(0,36,76,0.2); border-radius: 3px; }
+
+  /* Mobile hint */
+  @media (max-width: 900px) {
+    .eventos-grid { grid-template-columns: 1fr !important; }
+    #galeria-grid { grid-template-columns: repeat(2,1fr) !important; }
+    #galeria-grid .gal-item[style*="grid-column:span 2"] { grid-column: span 1 !important; }
+    #galeria-grid .gal-item[style*="grid-column: span 2"] { grid-column: span 1 !important; }
+    .nav-links { display: none; }
+    .section { padding: 60px 24px; }
+    .page-header { padding: 100px 24px 50px; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { display: none; }
+    .two-col, .contact-grid, .faq-grid, .sim-layout, .login-wrapper, .search-results-grid { grid-template-columns: 1fr; }
+    .services-grid, .services-full-grid, .news-full-grid { grid-template-columns: 1fr; }
+    footer { padding: 40px 24px 20px; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    nav { padding: 0 20px; }
+  }
+
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ NAV ═══════════════ -->
+<nav id="mainNav">
+  <a class="nav-logo" onclick="showPage('home')">
+    <img src="data:image/png;base64,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" alt="MALUA Logo" style="height:52px;width:auto;display:block;">
+    <div class="nav-logo-text" style="display:none;">
+      <span>MALUA</span>
+      <span>Cooperativa de Poupança e Crédito</span>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#" onclick="showPage('home')" id="nav-home" class="active">Início</a></li>
+    <li><a href="#" onclick="showPage('institucional')" id="nav-institucional">Institucional</a></li>
+    <li><a href="#" onclick="showPage('servicos')" id="nav-servicos">Serviços</a></li>
+    <li><a href="#" onclick="showPage('noticias')" id="nav-noticias">Notícias</a></li>
+    <li><a href="#" onclick="showPage('eventos')" id="nav-eventos">Eventos</a></li>
+    <li><a href="#" onclick="showPage('galeria')" id="nav-galeria">Galeria</a></li>
+    <li><a href="#" onclick="showPage('documentos')" id="nav-documentos">Documentos</a></li>
+    <li><a href="#" onclick="showPage('contacto')" id="nav-contacto">Contacto</a></li>
+    <li><a href="#" onclick="showPage('faq')" id="nav-faq">FAQ</a></li>
+    <li><a href="#" onclick="showPage('simuladores')" id="nav-simuladores">Simuladores</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn-search" onclick="showPage('pesquisa')" title="Pesquisa">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    </button>
+    <a class="btn-area-privada" onclick="showPage('area-privada')">Área Privada</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════
+     PAGE: HOME
+════════════════════════════════════════ -->
+<div id="page-home" class="page active">
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-tag">Cooperativa Confiável</div>
+      <h1>O seu futuro<br>começa com uma <em>boa</em><br>decisão financeira</h1>
+      <p>A MALUA é a cooperativa de poupança e crédito que coloca os seus membros em primeiro lugar. Soluções financeiras transparentes, acessíveis e pensadas para si.</p>
+      <div class="hero-actions">
+        <a class="btn-primary" onclick="showPage('servicos')">Conheça os Serviços</a>
+        <a class="btn-secondary" onclick="showPage('simuladores')">Simular Crédito</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-number">12<span>k+</span></div>
+          <div class="stat-label">Membros ativos</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">98<span>%</span></div>
+          <div class="stat-label">Satisfação</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">15<span>+</span></div>
+          <div class="stat-label">Anos de história</div>
+        </div>
+      </div>
+
+      <!-- Câmbio inline hero -->
+      <div style="margin-top:28px;background:white;border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 4px 20px rgba(0,36,76,0.07);">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 18px;background:var(--navy);">
+          <span style="font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.7);">Taxas de câmbio</span>
+          <span style="font-size:11px;color:rgba(255,255,255,0.4);">Actualizado: <span id="cambio-time">--:--</span></span>
+        </div>
+        <table style="width:100%;border-collapse:collapse;font-size:13.5px;">
+          <thead>
+            <tr style="background:#f8f4ef;">
+              <th style="text-align:left;padding:8px 18px;color:var(--muted);font-weight:600;font-size:11px;letter-spacing:0.5px;text-transform:uppercase;">Moeda</th>
+              <th style="text-align:right;padding:8px 14px;color:var(--muted);font-weight:600;font-size:11px;letter-spacing:0.5px;text-transform:uppercase;">Compra</th>
+              <th style="text-align:right;padding:8px 18px;color:var(--muted);font-weight:600;font-size:11px;letter-spacing:0.5px;text-transform:uppercase;">Venda</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-top:1px solid var(--border);">
+              <td style="padding:10px 18px;"><span style="display:flex;align-items:center;gap:8px;"><span style="font-size:18px;">🇪🇺</span><span><span style="font-weight:700;color:var(--navy);">EUR</span> <span style="color:var(--muted);font-size:12px;">Euro</span></span></span></td>
+              <td style="text-align:right;padding:10px 14px;font-weight:600;color:var(--navy);" id="buy-EUR">64.18</td>
+              <td style="text-align:right;padding:10px 18px;font-weight:600;color:var(--red);" id="sell-EUR">65.46</td>
+            </tr>
+            <tr style="border-top:1px solid var(--border);background:#fafafa;">
+              <td style="padding:10px 18px;"><span style="display:flex;align-items:center;gap:8px;"><span style="font-size:18px;">🇺🇸</span><span><span style="font-weight:700;color:var(--navy);">USD</span> <span style="color:var(--muted);font-size:12px;">Dólar</span></span></span></td>
+              <td style="text-align:right;padding:10px 14px;font-weight:600;color:var(--navy);" id="buy-USD">58.60</td>
+              <td style="text-align:right;padding:10px 18px;font-weight:600;color:var(--red);" id="sell-USD">59.70</td>
+            </tr>
+            <tr style="border-top:1px solid var(--border);">
+              <td style="padding:10px 18px;"><span style="display:flex;align-items:center;gap:8px;"><span style="font-size:18px;">🇿🇦</span><span><span style="font-weight:700;color:var(--navy);">ZAR</span> <span style="color:var(--muted);font-size:12px;">Rand</span></span></span></td>
+              <td style="text-align:right;padding:10px 14px;font-weight:600;color:var(--navy);" id="buy-ZAR">3.21</td>
+              <td style="text-align:right;padding:10px 18px;font-weight:600;color:var(--red);" id="sell-ZAR">3.27</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="hero-right" style="position:relative;overflow:hidden;border-radius:24px;">
+      <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=900&q=85&auto=format&fit=crop" alt="Membros MALUA" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:24px;">
+      <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,36,76,0.35) 0%,transparent 60%);border-radius:24px;pointer-events:none;"></div>
+      <!-- Floating stats card -->
+      <div style="position:absolute;bottom:28px;left:28px;right:28px;background:rgba(255,255,255,0.92);backdrop-filter:blur(16px);border-radius:16px;padding:20px 24px;display:flex;gap:24px;justify-content:space-around;box-shadow:0 8px 32px rgba(0,0,0,0.15);">
+        <div style="text-align:center;">
+          <div style="font-family:'DM Serif Display',serif;font-size:26px;color:var(--navy);line-height:1;">12k+</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:3px;letter-spacing:0.3px;">Membros</div>
+        </div>
+        <div style="width:1px;background:var(--border);"></div>
+        <div style="text-align:center;">
+          <div style="font-family:'DM Serif Display',serif;font-size:26px;color:var(--navy);line-height:1;">MT94M</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:3px;letter-spacing:0.3px;">Ativos geridos</div>
+        </div>
+        <div style="width:1px;background:var(--border);"></div>
+        <div style="text-align:center;">
+          <div style="font-family:'DM Serif Display',serif;font-size:26px;color:var(--navy);line-height:1;">15+</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:3px;letter-spacing:0.3px;">Anos de história</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Serviços Destaque -->
+  <div class="section" style="background:var(--cream);">
+    <div class="section-header centered">
+      <div class="section-tag">O que oferecemos</div>
+      <h2 class="section-title">Serviços feitos para <em>si</em></h2>
+      <p class="section-subtitle">Da poupança ao crédito, passando pelos seguros — temos tudo o que precisa para uma vida financeira saudável.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card" style="padding:0;overflow:hidden;">
+        <div style="height:150px;overflow:hidden;"><img src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=500&q=80&auto=format&fit=crop" alt="Poupança" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s;" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'"></div>
+        <div style="padding:24px 24px 28px;">
+          <div class="service-icon" style="margin-top:0;margin-bottom:12px;font-size:22px;">💰</div>
+          <h3>Contas de Poupança</h3>
+          <p>Poupe com taxas de juro competitivas e condições flexíveis adaptadas ao seu perfil.</p>
+          <a class="service-link" onclick="showPage('servicos')">Saiba mais →</a>
+        </div>
+      </div>
+      <div class="service-card" style="padding:0;overflow:hidden;">
+        <div style="height:150px;overflow:hidden;"><img src="https://images.unsplash.com/photo-1560472355-536de3962603?w=500&q=80&auto=format&fit=crop" alt="Crédito Pessoal" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s;" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'"></div>
+        <div style="padding:24px 24px 28px;">
+          <div class="service-icon" style="margin-top:0;margin-bottom:12px;font-size:22px;">🏦</div>
+          <h3>Crédito Pessoal</h3>
+          <p>Financiamento rápido e justo para os seus projetos pessoais, com condições acessíveis.</p>
+          <a class="service-link" onclick="showPage('servicos')">Saiba mais →</a>
+        </div>
+      </div>
+      <div class="service-card" style="padding:0;overflow:hidden;">
+        <div style="height:150px;overflow:hidden;"><img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=500&q=80&auto=format&fit=crop" alt="Habitação" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s;" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'"></div>
+        <div style="padding:24px 24px 28px;">
+          <div class="service-icon" style="margin-top:0;margin-bottom:12px;font-size:22px;">🏠</div>
+          <h3>Crédito Habitação</h3>
+          <p>Realize o sonho da casa própria com apoio especializado em cada passo do processo.</p>
+          <a class="service-link" onclick="showPage('servicos')">Saiba mais →</a>
+        </div>
+      </div>
+      <div class="service-card" style="padding:0;overflow:hidden;">
+        <div style="height:150px;overflow:hidden;"><img src="https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?w=500&q=80&auto=format&fit=crop" alt="Banca Digital" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s;" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'"></div>
+        <div style="padding:24px 24px 28px;">
+          <div class="service-icon" style="margin-top:0;margin-bottom:12px;font-size:22px;">📱</div>
+          <h3>Banca Digital</h3>
+          <p>Gerencie as suas finanças em qualquer lugar através da nossa plataforma online segura.</p>
+          <a class="service-link" onclick="showPage('servicos')">Saiba mais →</a>
+        </div>
+      </div>
+      <div class="service-card" style="padding:0;overflow:hidden;">
+        <div style="height:150px;overflow:hidden;"><img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=500&q=80&auto=format&fit=crop" alt="Seguros" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s;" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'"></div>
+        <div style="padding:24px 24px 28px;">
+          <div class="service-icon" style="margin-top:0;margin-bottom:12px;font-size:22px;">🛡️</div>
+          <h3>Seguros</h3>
+          <p>Proteja o que mais importa com as nossas soluções de seguro vida, saúde e habitação.</p>
+          <a class="service-link" onclick="showPage('servicos')">Saiba mais →</a>
+        </div>
+      </div>
+      <div class="service-card" style="padding:0;overflow:hidden;">
+        <div style="height:150px;overflow:hidden;"><img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=500&q=80&auto=format&fit=crop" alt="Investimento" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s;" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'"></div>
+        <div style="padding:24px 24px 28px;">
+          <div class="service-icon" style="margin-top:0;margin-bottom:12px;font-size:22px;">📈</div>
+          <h3>Investimento</h3>
+          <p>Faça o seu dinheiro crescer com planos de investimento pensados a longo prazo.</p>
+          <a class="service-link" onclick="showPage('servicos')">Saiba mais →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Últimas Notícias -->
+  <div class="section">
+    <div class="section-header" style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:40px;">
+      <div>
+        <div class="section-tag">Novidades</div>
+        <h2 class="section-title" style="margin-bottom:0;">Últimas <em>notícias</em></h2>
+      </div>
+      <a class="service-link" onclick="showPage('noticias')">Ver todas as notícias →</a>
+    </div>
+    <div class="news-grid">
+      <div class="news-card">
+        <div class="news-image" style="background:url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80') center/cover">
+          <span class="news-image-icon">🏛️</span>
+          <div class="news-image-overlay"></div>
+          <span class="news-category">Institucional</span>
+        </div>
+        <div class="news-body">
+          <div class="news-date">14 Fevereiro 2026</div>
+          <h3>MALUA celebra 15 anos ao serviço dos seus membros</h3>
+          <p>Uma década e meia de compromisso com a inclusão financeira e o desenvolvimento das comunidades.</p>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="news-image" style="background:url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&q=80') center/cover">
+          <span class="news-image-icon">📊</span>
+          <div class="news-image-overlay"></div>
+          <span class="news-category">Resultados</span>
+        </div>
+        <div class="news-body">
+          <div class="news-date">2 Janeiro 2026</div>
+          <h3>Resultados do exercício de 2025 superam expectativas</h3>
+          <p>Crescimento de 23% na captação de poupança e expansão do crédito concedido.</p>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="news-image" style="background:url('https://images.unsplash.com/photo-1563986768609-322da13575f3?w=600&q=80') center/cover">
+          <span class="news-image-icon">📱</span>
+          <div class="news-image-overlay"></div>
+          <span class="news-category">Digital</span>
+        </div>
+        <div class="news-body">
+          <div class="news-date">20 Dezembro 2025</div>
+          <h3>Nova plataforma digital disponível para todos os membros</h3>
+          <p>Interface renovada com novas funcionalidades de gestão de conta e simuladores.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="nav-logo" style="cursor:default;">
+          <img src="data:image/png;base64,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" alt="MALUA Logo" style="height:52px;width:auto;display:block;">
+          <div class="nav-logo-text" style="display:none;">
+            <span>MALUA</span>
+            <span style="color:rgba(255,255,255,0.4);">Cooperativa de Poupança e Crédito</span>
+          </div>
+        </div>
+        <p>Comprometidos com a inclusão financeira e o bem-estar dos nossos membros desde 2011.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Serviços</h4>
+        <a>Poupança</a><a>Crédito Pessoal</a><a>Crédito Habitação</a><a>Seguros</a><a>Investimento</a>
+      </div>
+      <div class="footer-col">
+        <h4>Institucional</h4>
+        <a onclick="showPage('institucional')">Quem somos</a>
+        <a>Missão e Valores</a><a>Órgãos Sociais</a>
+        <a onclick="showPage('documentos')">Documentos</a>
+        <a onclick="showPage('noticias')">Notícias</a>
+      </div>
+      <div class="footer-col">
+        <h4>Apoio</h4>
+        <a onclick="showPage('faq')">FAQ</a>
+        <a onclick="showPage('contacto')">Contacto</a>
+        <a>Reclamações</a><a>Política de Privacidade</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 MALUA — CPC · Cooperativa de Poupança e Crédito. Todos os direitos reservados.</p>
+      <div class="footer-bottom-links">
+        <a>Privacidade</a><a>Termos</a><a>Cookies</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE: INSTITUCIONAL
+════════════════════════════════════════ -->
+<div id="page-institucional" class="page">
+  <div style="position:relative;height:320px;overflow:hidden;">
+    <img src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=1400&q=85&auto=format&fit=crop" alt="Equipa MALUA" style="width:100%;height:100%;object-fit:cover;">
+    <div style="position:absolute;inset:0;background:linear-gradient(to right,rgba(0,36,76,0.88) 0%,rgba(0,36,76,0.35) 100%);"></div>
+    <div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:0 80px 48px;">
+      <div class="breadcrumb" style="color:rgba(255,255,255,0.55);margin-bottom:12px;"><a onclick="showPage('home')" style="color:rgba(255,255,255,0.55);">Início</a> <span>›</span> <span>Institucional</span></div>
+      <h1 style="font-family:'DM Serif Display',serif;font-size:clamp(32px,4vw,52px);color:white;font-weight:400;line-height:1.15;margin-bottom:12px;">Quem <em style="color:rgba(201,168,76,0.95);">somos</em></h1>
+      <p style="font-size:17px;color:rgba(255,255,255,0.7);max-width:520px;">Uma cooperativa fundada na confiança, na transparência e no compromisso com os nossos membros.</p>
+    </div>
+  </div>
+  <div class="section">
+    <div class="two-col">
+      <div>
+        <div class="section-tag">A nossa história</div>
+        <h2 class="section-title">Mais de 15 anos ao <em>seu lado</em></h2>
+        <p style="color:var(--muted);line-height:1.8;margin-bottom:16px;">Fundada em 2011, a MALUA nasceu da vontade de criar uma instituição financeira centrada nas pessoas. Começámos como uma pequena cooperativa local e crescemos para servir mais de 12.000 membros.</p>
+        <p style="color:var(--muted);line-height:1.8;">O nosso modelo cooperativo garante que cada membro tem voz ativa nas decisões e que os resultados regressam à comunidade sob a forma de melhores condições e serviços.</p>
+        <ul class="feature-list">
+          <li>Supervisão pelo Banco de Moçambique e regulada pela lei das cooperativas</li>
+          <li>Fundo de Garantia de Depósitos que protege as suas poupanças</li>
+          <li>Assembleia Geral anual com participação de todos os membros</li>
+          <li>Relatórios de contas públicos e auditoria independente</li>
+        </ul>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:20px;">
+        <div style="border-radius:20px;overflow:hidden;height:240px;">
+          <img src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=800&q=85&auto=format&fit=crop" alt="Equipa MALUA" style="width:100%;height:100%;object-fit:cover;">
+        </div>
+        <div style="background:var(--navy);border-radius:24px;padding:36px;color:white;display:flex;flex-direction:column;justify-content:space-between;">
+          <div>
+            <div style="font-family:'DM Serif Display',serif;font-size:48px;font-weight:400;color:var(--gold);line-height:1;">12.847</div>
+            <div style="font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:40px;">Membros cooperadores ativos</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;">
+            <div><div style="font-family:'DM Serif Display',serif;font-size:34px;color:white;"> MT94M</div><div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px;">Ativos totais geridos</div></div>
+            <div><div style="font-family:'DM Serif Display',serif;font-size:34px;color:white;"> MT62M</div><div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px;">Crédito concedido</div></div>
+            <div><div style="font-family:'DM Serif Display',serif;font-size:34px;color:white;"> MT31M</div><div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px;">Poupanças captadas</div></div>
+            <div><div style="font-family:'DM Serif Display',serif;font-size:34px;color:white;">4.2%</div><div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px;">Taxa máx. crédito pessoal</div></div>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:80px;">
+      <div class="section-tag">Valores que nos guiam</div>
+      <h2 class="section-title">Missão, <em>Visão</em> & Valores</h2>
+      <div class="values-grid">
+        <div class="value-card"><div class="value-icon">🤝</div><h4>Solidariedade</h4><p>Ajudamo-nos mutuamente. O sucesso de cada membro é o sucesso de todos.</p></div>
+        <div class="value-card"><div class="value-icon">🔍</div><h4>Transparência</h4><p>Contas abertas, decisões partilhadas e comunicação honesta em tudo o que fazemos.</p></div>
+        <div class="value-card"><div class="value-icon">⚖️</div><h4>Equidade</h4><p>Todos os membros têm os mesmos direitos, independentemente do seu capital social.</p></div>
+        <div class="value-card"><div class="value-icon">🌱</div><h4>Sustentabilidade</h4><p>Crescemos de forma responsável, pensando nas gerações futuras.</p></div>
+        <div class="value-card"><div class="value-icon">🏘️</div><h4>Comunidade</h4><p>Reinvestimos na comunidade porque acreditamos no desenvolvimento local.</p></div>
+        <div class="value-card"><div class="value-icon">🔐</div><h4>Segurança</h4><p>As suas poupanças estão protegidas pelos mais elevados padrões de segurança.</p></div>
+      </div>
+    </div>
+  </div>
+  <footer style="background:var(--navy);color:white;padding:30px 80px;text-align:center;">
+    <p style="font-size:13px;color:rgba(255,255,255,0.35);">© 2026 MALUA — CPC · Cooperativa de Poupança e Crédito</p>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE: SERVIÇOS
+════════════════════════════════════════ -->
+<div id="page-servicos" class="page">
+  <div style="position:relative;height:320px;overflow:hidden;">
+    <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1400&q=85&auto=format&fit=crop" alt="Serviços MALUA" style="width:100%;height:100%;object-fit:cover;">
+    <div style="position:absolute;inset:0;background:linear-gradient(to right,rgba(0,36,76,0.85) 0%,rgba(0,36,76,0.4) 100%);"></div>
+    <div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:0 80px 48px;">
+      <div class="breadcrumb" style="color:rgba(255,255,255,0.55);margin-bottom:12px;"><a onclick="showPage('home')" style="color:rgba(255,255,255,0.55);">Início</a> <span>›</span> <span>Serviços</span></div>
+      <h1 style="font-family:'DM Serif Display',serif;font-size:clamp(32px,4vw,52px);color:white;font-weight:400;line-height:1.15;margin-bottom:12px;">Os nossos <em style="color:rgba(201,168,76,0.95);">serviços</em></h1>
+      <p style="font-size:17px;color:rgba(255,255,255,0.7);max-width:520px;">Soluções financeiras completas, pensadas para cada fase da sua vida.</p>
+    </div>
+  </div>
+  <div class="section">
+    <div class="alert-banner">⚠️ <strong>Promoção de Fevereiro:</strong> Taxa de juro de 3,2% nos créditos pessoais aprovados até 28/02/2026. Consulte condições.</div>
+    <div class="services-full-grid">
+      <div class="service-full-card">
+        <div class="service-full-icon icon-navy">💰</div>
+        <div class="service-full-body">
+          <h3>Conta Poupança Flexível</h3>
+          <p>Poupança sem prazo mínimo, com acesso ao dinheiro quando precisar. Taxa de juro anual de 3,0% até 50.000 MT.</p>
+          <div class="service-tags"><span class="tag">Até 3,0% TAE</span><span class="tag">Sem prazo mínimo</span><span class="tag red">Popular</span></div>
+        </div>
+      </div>
+      <div class="service-full-card">
+        <div class="service-full-icon icon-red">🏦</div>
+        <div class="service-full-body">
+          <h3>Crédito Pessoal</h3>
+          <p>De 500 MT a 30.000 MT, com prazos de 12 a 84 meses. Aprovação rápida para membros com conta ativa.</p>
+          <div class="service-tags"><span class="tag">A partir de 3,2% TAEG</span><span class="tag">Aprovação em 48h</span></div>
+        </div>
+      </div>
+      <div class="service-full-card">
+        <div class="service-full-icon icon-navy">🏠</div>
+        <div class="service-full-body">
+          <h3>Crédito Habitação</h3>
+          <p>Financiamento até 90% do valor do imóvel, com taxa variável ou mista. Apoio jurídico incluído.</p>
+          <div class="service-tags"><span class="tag">Taxa de referência BM + 1,2%</span><span class="tag">Até 40 anos</span><span class="tag">Apoio jurídico</span></div>
+        </div>
+      </div>
+      <div class="service-full-card">
+        <div class="service-full-icon icon-red">🚗</div>
+        <div class="service-full-body">
+          <h3>Crédito Automóvel</h3>
+          <p>Financiamento para viaturas novas e usadas, com ou sem entrada inicial. Seguros competitivos.</p>
+          <div class="service-tags"><span class="tag">A partir de 3,8% TAEG</span><span class="tag">Até 72 meses</span></div>
+        </div>
+      </div>
+      <div class="service-full-card">
+        <div class="service-full-icon icon-navy">📱</div>
+        <div class="service-full-body">
+          <h3>Conta à Ordem Digital</h3>
+          <p>Conta bancária 100% digital, sem comissões de manutenção. Transferências SEPA gratuitas.</p>
+          <div class="service-tags"><span class="tag">Sem comissões</span><span class="tag">Cartão Débito</span><span class="tag red">Novo</span></div>
+        </div>
+      </div>
+      <div class="service-full-card">
+        <div class="service-full-icon icon-red">🛡️</div>
+        <div class="service-full-body">
+          <h3>Seguro de Vida e Saúde</h3>
+          <p>Proteção para si e para a sua família. Seguros vida, saúde, acidentes pessoais e multirriscos.</p>
+          <div class="service-tags"><span class="tag">Parceria AXA</span><span class="tag">Desconto cooperativo</span></div>
+        </div>
+      </div>
+      <div class="service-full-card">
+        <div class="service-full-icon icon-navy">📈</div>
+        <div class="service-full-body">
+          <h3>Planos de Investimento</h3>
+          <p>Depósito a prazo, fundos de investimento e obrigações do Tesouro. Rentabilidades acima da média.</p>
+          <div class="service-tags"><span class="tag">Perfil Conservador</span><span class="tag">Perfil Moderado</span><span class="tag">Capital garantido</span></div>
+        </div>
+      </div>
+      <div class="service-full-card">
+        <div class="service-full-icon icon-red">🏢</div>
+        <div class="service-full-body">
+          <h3>Crédito Empresarial</h3>
+          <p>Soluções para micro e pequenas empresas: fundo de maneio, investimento e leasing.</p>
+          <div class="service-tags"><span class="tag">PME</span><span class="tag">Leasing</span><span class="tag">Factoring</span></div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:48px;">
+      <a class="btn-primary" onclick="showPage('simuladores')">Simular Crédito ou Poupança</a>
+    </div>
+  </div>
+  <footer style="background:var(--navy);color:white;padding:30px 80px;text-align:center;">
+    <p style="font-size:13px;color:rgba(255,255,255,0.35);">© 2026 MALUA — CPC · Cooperativa de Poupança e Crédito</p>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE: NOTÍCIAS
+════════════════════════════════════════ -->
+<div id="page-noticias" class="page">
+  <div style="position:relative;height:280px;overflow:hidden;">
+    <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1400&q=85&auto=format&fit=crop" alt="Notícias" style="width:100%;height:100%;object-fit:cover;">
+    <div style="position:absolute;inset:0;background:linear-gradient(to right,rgba(0,36,76,0.88) 0%,rgba(0,36,76,0.35) 100%);"></div>
+    <div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:0 80px 40px;">
+      <div class="breadcrumb" style="color:rgba(255,255,255,0.55);margin-bottom:10px;"><a onclick="showPage('home')" style="color:rgba(255,255,255,0.55);">Início</a> <span>›</span> <span>Notícias</span></div>
+      <h1 style="font-family:'DM Serif Display',serif;font-size:clamp(28px,4vw,48px);color:white;font-weight:400;line-height:1.15;margin-bottom:10px;">Notícias & <em style="color:rgba(201,168,76,0.95);">Comunicados</em></h1>
+      <p style="font-size:16px;color:rgba(255,255,255,0.7);max-width:520px;">Mantenha-se informado sobre as últimas novidades da MALUA e do setor cooperativo.</p>
+    </div>
+  </div>
+  <div class="section">
+    <div class="doc-filters">
+      <button class="filter-btn active">Todas</button>
+      <button class="filter-btn">Institucional</button>
+      <button class="filter-btn">Resultados</button>
+      <button class="filter-btn">Digital</button>
+      <button class="filter-btn">Eventos</button>
+      <button class="filter-btn">Regulatório</button>
+    </div>
+    <div class="news-full-grid">
+      <div class="news-full-card">
+        <div class="news-full-image" style="background:url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80') center/cover"><span class="news-full-image-icon">🏛️</span><div class="news-image-overlay"></div><span class="news-category">Institucional</span></div>
+        <div class="news-full-body">
+          <div class="news-meta"><span class="news-cat-badge">Institucional</span><span style="font-size:12px;color:var(--muted);">14 Fev 2026</span></div>
+          <h3>MALUA celebra 15 anos ao serviço dos seus membros</h3>
+          <p>Uma década e meia de compromisso com a inclusão financeira e o desenvolvimento das comunidades onde operamos.</p>
+        </div>
+      </div>
+      <div class="news-full-card">
+        <div class="news-full-image" style="background:url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&q=80') center/cover"><span class="news-full-image-icon">📊</span><div class="news-image-overlay"></div><span class="news-category">Resultados</span></div>
+        <div class="news-full-body">
+          <div class="news-meta"><span class="news-cat-badge">Resultados</span><span style="font-size:12px;color:var(--muted);">2 Jan 2026</span></div>
+          <h3>Resultados do exercício de 2025 superam as expectativas</h3>
+          <p>Crescimento de 23% na captação de poupança. Crédito concedido aumentou 18% face ao ano anterior.</p>
+        </div>
+      </div>
+      <div class="news-full-card">
+        <div class="news-full-image" style="background:url('https://images.unsplash.com/photo-1563986768609-322da13575f3?w=600&q=80') center/cover"><span class="news-full-image-icon">📱</span><div class="news-image-overlay"></div><span class="news-category">Digital</span></div>
+        <div class="news-full-body">
+          <div class="news-meta"><span class="news-cat-badge">Digital</span><span style="font-size:12px;color:var(--muted);">20 Dez 2025</span></div>
+          <h3>Nova plataforma digital disponível para todos os membros</h3>
+          <p>Interface renovada com novos simuladores, gestão de conta melhorada e suporte por chat em tempo real.</p>
+        </div>
+      </div>
+      <div class="news-full-card">
+        <div class="news-full-image" style="background:url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80') center/cover"><span class="news-full-image-icon">🎓</span><div class="news-image-overlay"></div><span class="news-category">Eventos</span></div>
+        <div class="news-full-body">
+          <div class="news-meta"><span class="news-cat-badge">Eventos</span><span style="font-size:12px;color:var(--muted);">5 Nov 2025</span></div>
+          <h3>Assembleia Geral 2025: aprovados os planos estratégicos para 2026-2028</h3>
+          <p>Com participação recorde de membros, foram aprovados novos estatutos e o plano de expansão digital.</p>
+        </div>
+      </div>
+      <div class="news-full-card">
+        <div class="news-full-image" style="background:url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=600&q=80') center/cover"><span class="news-full-image-icon">⚖️</span><div class="news-image-overlay"></div><span class="news-category">Regulatório</span></div>
+        <div class="news-full-body">
+          <div class="news-meta"><span class="news-cat-badge">Regulatório</span><span style="font-size:12px;color:var(--muted);">14 Out 2025</span></div>
+          <h3>MALUA obtém certificação ISO 27001 em Segurança da Informação</h3>
+          <p>A certificação reforça o compromisso com a proteção dos dados dos nossos membros.</p>
+        </div>
+      </div>
+      <div class="news-full-card">
+        <div class="news-full-image" style="background:url('https://images.unsplash.com/photo-1531545514256-b1400bc00f31?w=600&q=80') center/cover"><span class="news-full-image-icon">🌍</span><div class="news-image-overlay"></div><span class="news-category">Comunidade</span></div>
+        <div class="news-full-body">
+          <div class="news-meta"><span class="news-cat-badge">Comunidade</span><span style="font-size:12px;color:var(--muted);">3 Set 2025</span></div>
+          <h3>Programa de apoio à literacia financeira chega a 800 jovens</h3>
+          <p>Em parceria com escolas locais, o programa já formou mais de 800 jovens em educação financeira básica.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer style="background:var(--navy);color:white;padding:30px 80px;text-align:center;">
+    <p style="font-size:13px;color:rgba(255,255,255,0.35);">© 2026 MALUA — CPC · Cooperativa de Poupança e Crédito</p>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE: DOCUMENTOS
+════════════════════════════════════════ -->
+<div id="page-documentos" class="page">
+  <div style="position:relative;height:280px;overflow:hidden;">
+    <img src="https://images.unsplash.com/photo-1568992687947-868a62a9f521?w=1400&q=85&auto=format&fit=crop" alt="Documentos" style="width:100%;height:100%;object-fit:cover;">
+    <div style="position:absolute;inset:0;background:linear-gradient(to right,rgba(0,36,76,0.88) 0%,rgba(0,36,76,0.35) 100%);"></div>
+    <div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:0 80px 40px;">
+      <div class="breadcrumb" style="color:rgba(255,255,255,0.55);margin-bottom:10px;"><a onclick="showPage('home')" style="color:rgba(255,255,255,0.55);">Início</a> <span>›</span> <span>Documentos</span></div>
+      <h1 style="font-family:'DM Serif Display',serif;font-size:clamp(28px,4vw,48px);color:white;font-weight:400;line-height:1.15;margin-bottom:10px;">Centro de <em style="color:rgba(201,168,76,0.95);">Documentos</em></h1>
+      <p style="font-size:16px;color:rgba(255,255,255,0.7);max-width:520px;">Aceda a todos os documentos institucionais, regulatórios e informativos da MALUA.</p>
+    </div>
+  </div>
+  <div class="section">
+    <div class="doc-filters">
+      <button class="filter-btn active">Todos</button>
+      <button class="filter-btn">Estatutos</button>
+      <button class="filter-btn">Relatórios</button>
+      <button class="filter-btn">Tarifários</button>
+      <button class="filter-btn">Formulários</button>
+      <button class="filter-btn">Regulamentos</button>
+    </div>
+    <div class="docs-list">
+      <div class="doc-item">
+        <div class="doc-type pdf">PDF</div>
+        <div class="doc-info">
+          <h4>Estatutos da Cooperativa MALUA — Revisão 2024</h4>
+          <p>Estatutos atualizados pela Assembleia Geral de 15 de Novembro de 2024</p>
+        </div>
+        <div class="doc-meta">
+          <div class="doc-date">15 Nov 2024</div>
+          <div class="doc-size">2,4 MB</div>
+        </div>
+        <button class="btn-download">↓ Descarregar</button>
+      </div>
+      <div class="doc-item">
+        <div class="doc-type pdf">PDF</div>
+        <div class="doc-info">
+          <h4>Relatório & Contas 2024</h4>
+          <p>Relatório anual com demonstrações financeiras auditadas e relatório de gestão</p>
+        </div>
+        <div class="doc-meta">
+          <div class="doc-date">28 Mar 2025</div>
+          <div class="doc-size">8,1 MB</div>
+        </div>
+        <button class="btn-download">↓ Descarregar</button>
+      </div>
+      <div class="doc-item">
+        <div class="doc-type pdf">PDF</div>
+        <div class="doc-info">
+          <h4>Tarifário de Serviços — 2026</h4>
+          <p>Listagem completa de comissões, taxas e preçário em vigor desde 1 de Janeiro de 2026</p>
+        </div>
+        <div class="doc-meta">
+          <div class="doc-date">1 Jan 2026</div>
+          <div class="doc-size">540 KB</div>
+        </div>
+        <button class="btn-download">↓ Descarregar</button>
+      </div>
+      <div class="doc-item">
+        <div class="doc-type docx">DOCX</div>
+        <div class="doc-info">
+          <h4>Formulário de Pedido de Crédito Pessoal</h4>
+          <p>Formulário editável para entrega presencial ou por email</p>
+        </div>
+        <div class="doc-meta">
+          <div class="doc-date">10 Jan 2026</div>
+          <div class="doc-size">128 KB</div>
+        </div>
+        <button class="btn-download">↓ Descarregar</button>
+      </div>
+      <div class="doc-item">
+        <div class="doc-type xlsx">XLSX</div>
+        <div class="doc-info">
+          <h4>Simulador de Crédito Habitação (Excel)</h4>
+          <p>Folha de cálculo para simulação detalhada das condições de Crédito Habitação</p>
+        </div>
+        <div class="doc-meta">
+          <div class="doc-date">5 Fev 2026</div>
+          <div class="doc-size">210 KB</div>
+        </div>
+        <button class="btn-download">↓ Descarregar</button>
+      </div>
+      <div class="doc-item">
+        <div class="doc-type pdf">PDF</div>
+        <div class="doc-info">
+          <h4>Política de Privacidade e Proteção de Dados</h4>
+          <p>Informação sobre o tratamento de dados pessoais conforme o Lei de Protecção de Dados Pessoais</p>
+        </div>
+        <div class="doc-meta">
+          <div class="doc-date">1 Jan 2025</div>
+          <div class="doc-size">380 KB</div>
+        </div>
+        <button class="btn-download">↓ Descarregar</button>
+      </div>
+      <div class="doc-item">
+        <div class="doc-type pdf">PDF</div>
+        <div class="doc-info">
+          <h4>Regulamento Interno de Crédito</h4>
+          <p>Normas e critérios de análise e concessão de crédito da cooperativa</p>
+        </div>
+        <div class="doc-meta">
+          <div class="doc-date">15 Jun 2024</div>
+          <div class="doc-size">1,2 MB</div>
+        </div>
+        <button class="btn-download">↓ Descarregar</button>
+      </div>
+    </div>
+  </div>
+  <footer style="background:var(--navy);color:white;padding:30px 80px;text-align:center;">
+    <p style="font-size:13px;color:rgba(255,255,255,0.35);">© 2026 MALUA — CPC · Cooperativa de Poupança e Crédito</p>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE: CONTACTO
+════════════════════════════════════════ -->
+<div id="page-contacto" class="page">
+  <div style="position:relative;height:280px;overflow:hidden;">
+    <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1400&q=85&auto=format&fit=crop" alt="Contacto" style="width:100%;height:100%;object-fit:cover;">
+    <div style="position:absolute;inset:0;background:linear-gradient(to right,rgba(0,36,76,0.88) 0%,rgba(0,36,76,0.35) 100%);"></div>
+    <div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:0 80px 40px;">
+      <div class="breadcrumb" style="color:rgba(255,255,255,0.55);margin-bottom:10px;"><a onclick="showPage('home')" style="color:rgba(255,255,255,0.55);">Início</a> <span>›</span> <span>Contacto</span></div>
+      <h1 style="font-family:'DM Serif Display',serif;font-size:clamp(28px,4vw,48px);color:white;font-weight:400;line-height:1.15;margin-bottom:10px;">Entre em <em style="color:rgba(201,168,76,0.95);">contacto</em></h1>
+      <p style="font-size:16px;color:rgba(255,255,255,0.7);max-width:520px;">Estamos aqui para ajudar. Fale connosco por telefone, email ou venha visitar-nos.</p>
+    </div>
+  </div>
+  <div class="section">
+    <div class="contact-grid">
+      <div class="contact-info">
+        <div class="contact-card">
+          <div class="contact-icon">📍</div>
+          <div>
+            <h4>Sede Principal</h4>
+            <p>Av. 24 de Julho, 142<br>Maputo, Moçambique</p>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon">📞</div>
+          <div>
+            <h4>Telefone & WhatsApp</h4>
+            <p>+258 +258 21 345 6789<br>Seg–Sex: 9h00–18h00</p>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon">✉️</div>
+          <div>
+            <h4>Email</h4>
+            <p><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="afc8caddcec3efc2cec3dace81ccc0c0df">[email&#160;protected]</a><br><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="cba8b9aeafa2bfa48ba6aaa7beaae5a8a4a4bb">[email&#160;protected]</a> (crédito)</p>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon">🕒</div>
+          <div>
+            <h4>Horário de Atendimento</h4>
+            <p>Segunda a Sexta: 9h00 – 18h00<br>Sábado: 9h00 – 13h00</p>
+          </div>
+        </div>
+        <div style="background:var(--cream);border-radius:16px;padding:24px;border:1px solid var(--border);">
+          <h4 style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:12px;">Delegações regionais</h4>
+          <div style="font-size:14px;color:var(--muted);line-height:2;">
+            📍 Beira — Av. das FPLM, 88<br>
+            📍 Nampula — R. da Independência, 24<br>
+            📍 Tete — Av. Eduardo Mondlane, 15
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="background:white;border:1px solid var(--border);border-radius:20px;padding:40px;">
+          <h3 style="font-family:'DM Serif Display',serif;font-size:26px;color:var(--navy);font-weight:400;margin-bottom:8px;">Envie-nos uma mensagem</h3>
+          <p style="font-size:14px;color:var(--muted);margin-bottom:28px;">Responderemos em menos de 24 horas úteis.</p>
+          <div class="form-row">
+            <div class="form-group"><label>Nome *</label><input type="text" placeholder="O seu nome completo"></div>
+            <div class="form-group"><label>Email *</label><input type="email" placeholder="email@exemplo.com"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Telefone</label><input type="tel" placeholder="+258 8X XXX XXXX"></div>
+            <div class="form-group">
+              <label>Assunto *</label>
+              <select>
+                <option>Selecione o assunto</option>
+                <option>Informação sobre serviços</option>
+                <option>Pedido de crédito</option>
+                <option>Reclamação</option>
+                <option>Associação como membro</option>
+                <option>Outro</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group"><label>Mensagem *</label><textarea placeholder="Descreva como podemos ajudá-lo…"></textarea></div>
+          <div class="form-group" style="display:flex;align-items:flex-start;gap:10px;margin-top:4px;">
+            <input type="checkbox" id="gdpr" style="width:16px;height:16px;margin-top:2px;flex-shrink:0;">
+            <label for="gdpr" style="font-size:13px;color:var(--muted);font-weight:400;">Concordo com a <a href="#" style="color:var(--red)">Política de Privacidade</a> e autorizo o tratamento dos meus dados para resposta ao meu pedido.</label>
+          </div>
+          <button class="btn-submit" style="margin-top:8px;">Enviar Mensagem</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer style="background:var(--navy);color:white;padding:30px 80px;text-align:center;">
+    <p style="font-size:13px;color:rgba(255,255,255,0.35);">© 2026 MALUA — CPC · Cooperativa de Poupança e Crédito</p>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE: FAQ
+════════════════════════════════════════ -->
+<div id="page-faq" class="page">
+  <div style="position:relative;height:280px;overflow:hidden;">
+    <img src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=1400&q=85&auto=format&fit=crop" alt="FAQ" style="width:100%;height:100%;object-fit:cover;">
+    <div style="position:absolute;inset:0;background:linear-gradient(to right,rgba(0,36,76,0.88) 0%,rgba(0,36,76,0.35) 100%);"></div>
+    <div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:0 80px 40px;">
+      <div class="breadcrumb" style="color:rgba(255,255,255,0.55);margin-bottom:10px;"><a onclick="showPage('home')" style="color:rgba(255,255,255,0.55);">Início</a> <span>›</span> <span>FAQ</span></div>
+      <h1 style="font-family:'DM Serif Display',serif;font-size:clamp(28px,4vw,48px);color:white;font-weight:400;line-height:1.15;margin-bottom:10px;">Perguntas <em style="color:rgba(201,168,76,0.95);">frequentes</em></h1>
+      <p style="font-size:16px;color:rgba(255,255,255,0.7);max-width:520px;">Encontre respostas rápidas às dúvidas mais comuns dos nossos membros.</p>
+    </div>
+  </div>
+  <div class="section">
+    <div class="faq-grid">
+      <div>
+        <p style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--navy);margin-bottom:12px;">Categorias</p>
+        <div class="faq-categories">
+          <button class="faq-cat-btn active" onclick="this.closest('.faq-categories').querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active')">🏠 Conta & Adesão</button>
+          <button class="faq-cat-btn" onclick="this.closest('.faq-categories').querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active')">💳 Crédito</button>
+          <button class="faq-cat-btn" onclick="this.closest('.faq-categories').querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active')">💰 Poupança</button>
+          <button class="faq-cat-btn" onclick="this.closest('.faq-categories').querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active')">📱 Banca Digital</button>
+          <button class="faq-cat-btn" onclick="this.closest('.faq-categories').querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active')">🛡️ Segurança</button>
+          <button class="faq-cat-btn" onclick="this.closest('.faq-categories').querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active')">📋 Documentação</button>
+        </div>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item open">
+          <div class="faq-question" onclick="this.closest('.faq-item').classList.toggle('open')">
+            Como me posso tornar membro da cooperativa MALUA?
+            <div class="faq-toggle">+</div>
+          </div>
+          <div class="faq-answer">Para se tornar membro, basta preencher o formulário de adesão disponível na nossa sede ou online, apresentar documento de identificação válido e realizar a subscrição da quota de entrada mínima de 50 MT. O processo de análise demora entre 3 a 5 dias úteis. Após aprovação, terá acesso imediato a todos os nossos serviços.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="this.closest('.faq-item').classList.toggle('open')">
+            Qual é o capital social mínimo para ser membro?
+            <div class="faq-toggle">+</div>
+          </div>
+          <div class="faq-answer">O capital social mínimo de entrada é de 50 MT, representado por 1 quota de 50 MT. Pode adquirir quotas adicionais a qualquer momento. Cada membro tem direito a 1 voto na Assembleia Geral, independentemente do número de quotas detidas.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="this.closest('.faq-item').classList.toggle('open')">
+            As minhas poupanças estão protegidas?
+            <div class="faq-toggle">+</div>
+          </div>
+          <div class="faq-answer">Sim. A MALUA participa no Fundo de Garantia de Depósitos de Moçambique, que garante os depósitos até 500.000 MT por titular. Adicionalmente, todos os nossos processos são regulados pelo Banco de Moçambique.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="this.closest('.faq-item').classList.toggle('open')">
+            Como funciona o pedido de crédito pessoal?
+            <div class="faq-toggle">+</div>
+          </div>
+          <div class="faq-answer">Pode iniciar o pedido online, na app ou presencialmente. Precisará de comprovativos de rendimentos dos últimos 3 meses, documento de identificação e NBAN. A análise demora entre 24 a 48 horas para membros com conta ativa. Se aprovado, o montante é creditado na conta em 1 dia útil.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="this.closest('.faq-item').classList.toggle('open')">
+            Posso transferir dinheiro gratuitamente?
+            <div class="faq-toggle">+</div>
+          </div>
+          <div class="faq-answer">As transferências interbancárias são gratuitas para contas digitais MALUA. As transferências internacionais para fora da zona SADC estão sujeitas às comissões previstas no Tarifário de Serviços disponível na secção Documentos.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="this.closest('.faq-item').classList.toggle('open')">
+            Esqueci-me da minha palavra-passe da Área Privada. O que faço?
+            <div class="faq-toggle">+</div>
+          </div>
+          <div class="faq-answer">No ecrã de login, clique em "Esqueceu a palavra-passe?". Receberá um email com instruções para redefinir a sua palavra-passe. Se não receber o email em 5 minutos, verifique a pasta de spam. Se o problema persistir, contacte o nosso apoio ao cliente pelo +258 21 345 6789.</div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:60px;padding:48px;background:var(--cream);border-radius:20px;">
+      <div style="font-size:32px;margin-bottom:12px;">💬</div>
+      <h3 style="font-family:'DM Serif Display',serif;font-size:26px;color:var(--navy);font-weight:400;margin-bottom:8px;">Não encontrou o que procurava?</h3>
+      <p style="color:var(--muted);margin-bottom:24px;">A nossa equipa está disponível para responder a todas as suas questões.</p>
+      <a class="btn-primary" onclick="showPage('contacto')">Contactar Apoio ao Cliente</a>
+    </div>
+  </div>
+  <footer style="background:var(--navy);color:white;padding:30px 80px;text-align:center;">
+    <p style="font-size:13px;color:rgba(255,255,255,0.35);">© 2026 MALUA — CPC · Cooperativa de Poupança e Crédito</p>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE: SIMULADORES
+════════════════════════════════════════ -->
+<div id="page-simuladores" class="page">
+  <div style="position:relative;height:280px;overflow:hidden;">
+    <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1400&q=85&auto=format&fit=crop" alt="Simuladores" style="width:100%;height:100%;object-fit:cover;">
+    <div style="position:absolute;inset:0;background:linear-gradient(to right,rgba(0,36,76,0.88) 0%,rgba(0,36,76,0.35) 100%);"></div>
+    <div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:0 80px 40px;">
+      <div class="breadcrumb" style="color:rgba(255,255,255,0.55);margin-bottom:10px;"><a onclick="showPage('home')" style="color:rgba(255,255,255,0.55);">Início</a> <span>›</span> <span>Simuladores</span></div>
+      <h1 style="font-family:'DM Serif Display',serif;font-size:clamp(28px,4vw,48px);color:white;font-weight:400;line-height:1.15;margin-bottom:10px;"><em style="color:rgba(201,168,76,0.95);">Simule</em> antes de decidir</h1>
+      <p style="font-size:16px;color:rgba(255,255,255,0.7);max-width:520px;">Calcule as condições de crédito ou retorno das suas poupanças de forma rápida e transparente.</p>
+    </div>
+  </div>
+  <div class="section">
+    <div class="sim-tabs">
+      <button class="sim-tab active" onclick="switchSim(this,'sim-credito')">Crédito Pessoal</button>
+      <button class="sim-tab" onclick="switchSim(this,'sim-habitacao')">Crédito Habitação</button>
+      <button class="sim-tab" onclick="switchSim(this,'sim-poupanca')">Poupança</button>
+    </div>
+
+    <!-- Crédito Pessoal -->
+    <div id="sim-credito" class="sim-content">
+      <div class="sim-layout">
+        <div class="sim-form">
+          <h3>Crédito Pessoal</h3>
+          <div class="form-group">
+            <label>Montante desejado: <strong id="lbl-montante" style="color:var(--navy)">5.000 MT</strong></label>
+            <input type="range" class="range-input" min="500" max="30000" step="500" value="5000"
+              oninput="document.getElementById('lbl-montante').textContent=Number(this.value).toLocaleString('pt-PT')+' MT';calcCredito()">
+            <div class="range-labels"><span>500 MT</span><span>30.000 MT</span></div>
+          </div>
+          <div class="form-group">
+            <label>Prazo de reembolso: <strong id="lbl-prazo" style="color:var(--navy)">36 meses</strong></label>
+            <input type="range" class="range-input" min="12" max="84" step="6" value="36"
+              oninput="document.getElementById('lbl-prazo').textContent=this.value+' meses';calcCredito()">
+            <div class="range-labels"><span>12 meses</span><span>84 meses</span></div>
+          </div>
+          <div class="form-group">
+            <label>Taxa de Juro (TAN)</label>
+            <select onchange="calcCredito()" id="sel-taxa">
+              <option value="3.2">3,2% — Membro ativo</option>
+              <option value="4.0">4,0% — Novo membro</option>
+              <option value="4.5">4,5% — Taxa padrão</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Finalidade</label>
+            <select>
+              <option>Consumo geral</option>
+              <option>Educação</option>
+              <option>Saúde</option>
+              <option>Obras/Remodelação</option>
+              <option>Outro</option>
+            </select>
+          </div>
+          <div style="padding:16px;background:rgba(0,36,76,0.04);border-radius:10px;font-size:13px;color:var(--muted);line-height:1.7;margin-top:8px;">
+            💡 Simulação meramente indicativa. Sujeita a análise e aprovação de crédito. TAEG inclui seguro de vida e comissões.
+          </div>
+        </div>
+        <div class="sim-result">
+          <h3>Resumo da Simulação</h3>
+          <div class="result-amount" id="res-prestacao">152,18 MT</div>
+          <div class="result-label">Prestação mensal estimada</div>
+          <div class="result-breakdown">
+            <div class="result-row"><span class="result-key">Montante solicitado</span><span class="result-val" id="res-montante">5.000,00 MT</span></div>
+            <div class="result-row"><span class="result-key">Prazo</span><span class="result-val" id="res-prazo">36 meses</span></div>
+            <div class="result-row"><span class="result-key">TAN</span><span class="result-val" id="res-tan">3,2%</span></div>
+            <div class="result-row"><span class="result-key">TAEG estimada</span><span class="result-val" id="res-taeg">4,1%</span></div>
+            <div class="result-row"><span class="result-key">Montante total a pagar</span><span class="result-val" id="res-total">5.478,48 MT</span></div>
+            <div class="result-row"><span class="result-key">Custo total do crédito</span><span class="result-val" id="res-custo">478,48 MT</span></div>
+          </div>
+          <button class="btn-primary" style="width:100%;margin-top:28px;background:var(--red);border-color:var(--red);" onclick="showPage('contacto')">
+            Solicitar Este Crédito
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Habitação (placeholder) -->
+    <div id="sim-habitacao" class="sim-content" style="display:none;">
+      <div class="sim-layout">
+        <div class="sim-form">
+          <h3>Crédito Habitação</h3>
+          <div class="form-group"><label>Valor do imóvel: <strong>150.000 MT</strong></label><input type="range" class="range-input" min="50000" max="500000" step="5000" value="150000"><div class="range-labels"><span>50k MT</span><span>500k MT</span></div></div>
+          <div class="form-group"><label>Entrada inicial: <strong>30.000 MT</strong></label><input type="range" class="range-input" min="0" max="100000" step="1000" value="30000"><div class="range-labels"><span>0 MT</span><span>100k MT</span></div></div>
+          <div class="form-group"><label>Prazo: <strong>30 anos</strong></label><input type="range" class="range-input" min="5" max="40" step="5" value="30"><div class="range-labels"><span>5 anos</span><span>40 anos</span></div></div>
+          <div class="form-group"><label>Tipo de taxa</label><select><option>Variável (Taxa de referência BM + 1,2%)</option><option>Mista (5 anos fixa + variável)</option></select></div>
+        </div>
+        <div class="sim-result">
+          <h3>Estimativa</h3>
+          <div class="result-amount">587 MT</div>
+          <div class="result-label">Prestação mensal estimada</div>
+          <div class="result-breakdown">
+            <div class="result-row"><span class="result-key">Capital financiado</span><span class="result-val">120.000 MT</span></div>
+            <div class="result-row"><span class="result-key">Prazo</span><span class="result-val">30 anos</span></div>
+            <div class="result-row"><span class="result-key">Taxa inicial</span><span class="result-val">Taxa de referência BM + 1,2%</span></div>
+          </div>
+          <button class="btn-primary" style="width:100%;margin-top:28px;background:var(--red);" onclick="showPage('contacto')">Pedir Proposta</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Poupança (placeholder) -->
+    <div id="sim-poupanca" class="sim-content" style="display:none;">
+      <div class="sim-layout">
+        <div class="sim-form">
+          <h3>Simulador de Poupança</h3>
+          <div class="form-group"><label>Capital inicial: <strong>2.000 MT</strong></label><input type="range" class="range-input" min="100" max="50000" step="100" value="2000"><div class="range-labels"><span>100 MT</span><span>50k MT</span></div></div>
+          <div class="form-group"><label>Depósito mensal: <strong>100 MT</strong></label><input type="range" class="range-input" min="0" max="1000" step="25" value="100"><div class="range-labels"><span>0 MT</span><span>1.000 MT</span></div></div>
+          <div class="form-group"><label>Prazo: <strong>5 anos</strong></label><input type="range" class="range-input" min="1" max="30" step="1" value="5"><div class="range-labels"><span>1 ano</span><span>30 anos</span></div></div>
+          <div class="form-group"><label>Produto</label><select><option>Conta Poupança Flexível (3,0%)</option><option>Depósito a Prazo 1 ano (3,5%)</option><option>Depósito a Prazo 3 anos (4,0%)</option></select></div>
+        </div>
+        <div class="sim-result">
+          <h3>Projeção de Poupança</h3>
+          <div class="result-amount">10.628 MT</div>
+          <div class="result-label">Saldo projetado ao final do prazo</div>
+          <div class="result-breakdown">
+            <div class="result-row"><span class="result-key">Capital investido</span><span class="result-val">8.000 MT</span></div>
+            <div class="result-row"><span class="result-key">Juros gerados</span><span class="result-val">2.628 MT</span></div>
+            <div class="result-row"><span class="result-key">Taxa anual</span><span class="result-val">3,0% TAE</span></div>
+          </div>
+          <button class="btn-primary" style="width:100%;margin-top:28px;background:var(--red);" onclick="showPage('contacto')">Abrir Conta Poupança</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer style="background:var(--navy);color:white;padding:30px 80px;text-align:center;">
+    <p style="font-size:13px;color:rgba(255,255,255,0.35);">© 2026 MALUA — CPC · Cooperativa de Poupança e Crédito</p>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE: ÁREA PRIVADA
+════════════════════════════════════════ -->
+<div id="page-area-privada" class="page">
+  <div class="login-wrapper">
+    <div class="login-left" style="position:relative;overflow:hidden;">
+      <img src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=900&q=85&auto=format&fit=crop" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.18;">
+      <div class="login-left-pattern"></div>
+      <div class="login-left-content">
+        <div class="nav-logo" style="cursor:default;margin-bottom:40px;">
+          <img src="data:image/png;base64,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" alt="MALUA Logo" style="height:52px;width:auto;display:block;">
+          <div class="nav-logo-text" style="display:none;">
+            <span style="color:white;">MALUA</span>
+            <span style="color:rgba(255,255,255,0.4);">Cooperativa de Poupança e Crédito</span>
+          </div>
+        </div>
+        <h2>Bem-vindo à sua <em>Área Privada</em></h2>
+        <p>Aceda às suas contas, movimentos, créditos e muito mais — de forma segura, a qualquer hora.</p>
+        <div class="login-features">
+          <div class="login-feature"><span class="login-feature-icon">📊</span><span>Consultar saldos e movimentos em tempo real</span></div>
+          <div class="login-feature"><span class="login-feature-icon">💸</span><span>Realizar transferências e pagamentos</span></div>
+          <div class="login-feature"><span class="login-feature-icon">📄</span><span>Aceder a extratos e documentação</span></div>
+          <div class="login-feature"><span class="login-feature-icon">🔔</span><span>Gerir alertas e notificações</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="login-right">
+      <div class="login-form-box">
+        <h2>Iniciar sessão</h2>
+        <p>Introduza as suas credenciais de acesso</p>
+        <div class="form-group"><label>Número de membro / NIF</label><input type="text" placeholder="Ex: 123456789"></div>
+        <div class="form-group">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
+            <label style="margin:0;">Palavra-passe</label>
+            <a href="#" class="forgot-link">Esqueceu?</a>
+          </div>
+          <input type="password" placeholder="••••••••">
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:24px;">
+          <input type="checkbox" id="remember" style="width:16px;height:16px;">
+          <label for="remember" style="font-size:13.5px;color:var(--muted);font-weight:400;margin:0;">Manter sessão iniciada</label>
+        </div>
+        <button class="btn-submit">Entrar na Área Privada</button>
+        <div class="divider"><span>ou</span></div>
+        <button style="width:100%;padding:13px;border:1.5px solid var(--border);background:white;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;color:var(--navy);transition:all 0.2s;" onmouseover="this.style.borderColor='var(--navy)'" onmouseout="this.style.borderColor='var(--border)'">
+          🔑 Autenticação por mToken / e-MOZA
+        </button>
+        <p style="text-align:center;margin-top:28px;font-size:14px;color:var(--muted);">
+          Não é membro? <a href="#" onclick="showPage('contacto')" style="color:var(--red);text-decoration:none;font-weight:600;">Aderir à cooperativa →</a>
+        </p>
+        <div style="margin-top:32px;padding:14px;background:var(--cream);border-radius:10px;display:flex;align-items:center;gap:10px;">
+          <span style="font-size:18px;">🔒</span>
+          <span style="font-size:12.5px;color:var(--muted);line-height:1.5;">Ligação segura SSL/TLS. Os seus dados estão protegidos e encriptados.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE: PESQUISA
+════════════════════════════════════════ -->
+<div id="page-pesquisa" class="page">
+  <div style="position:relative;height:280px;overflow:hidden;">
+    <img src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=1400&q=85&auto=format&fit=crop" alt="Pesquisa" style="width:100%;height:100%;object-fit:cover;">
+    <div style="position:absolute;inset:0;background:linear-gradient(to right,rgba(0,36,76,0.88) 0%,rgba(0,36,76,0.35) 100%);"></div>
+    <div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:0 80px 40px;">
+      <div class="breadcrumb" style="color:rgba(255,255,255,0.55);margin-bottom:10px;"><a onclick="showPage('home')" style="color:rgba(255,255,255,0.55);">Início</a> <span>›</span> <span>Pesquisa</span></div>
+      <h1 style="font-family:'DM Serif Display',serif;font-size:clamp(28px,4vw,48px);color:white;font-weight:400;line-height:1.15;margin-bottom:10px;">O que está a <em style="color:rgba(201,168,76,0.95);">procurar?</em></h1>
+      <p style="font-size:16px;color:rgba(255,255,255,0.7);max-width:520px;">Pesquise serviços, notícias, documentos e muito mais.</p>
+    </div>
+  </div>
+  <div class="search-hero">
+    <div style="text-align:center;margin-bottom:32px;display:none;">
+      <div class="section-tag">Pesquisar</div>
+      <h1 style="display:none;">O que está a procurar?</h1>
+    </div>
+    <div class="search-bar-lg">
+      <input type="text" id="search-input" placeholder="Pesquisar serviços, notícias, documentos…" value="crédito pessoal">
+      <button>⌕</button>
+    </div>
+    <div class="search-filters">
+      <button class="filter-btn active">Todos os resultados</button>
+      <button class="filter-btn">Serviços</button>
+      <button class="filter-btn">Notícias</button>
+      <button class="filter-btn">Documentos</button>
+      <button class="filter-btn">FAQ</button>
+    </div>
+  </div>
+  <div class="section">
+    <div style="margin-bottom:20px;font-size:14px;color:var(--muted);">7 resultados para <strong style="color:var(--navy);">"crédito pessoal"</strong></div>
+    <div class="search-results-grid">
+      <div class="search-sidebar">
+        <h4>Refinar resultados</h4>
+        <div class="filter-btn active" style="margin-bottom:8px;display:block;text-align:left;border-radius:8px;">Relevância</div>
+        <div class="filter-btn" style="margin-bottom:8px;display:block;text-align:left;border-radius:8px;">Mais recentes</div>
+        <div style="margin-top:24px;">
+          <h4>Tipo de conteúdo</h4>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px;">
+            <label style="display:flex;align-items:center;gap:8px;font-size:14px;color:var(--navy);cursor:pointer;"><input type="checkbox" checked> Serviços (3)</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:14px;color:var(--navy);cursor:pointer;"><input type="checkbox" checked> FAQ (2)</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:14px;color:var(--navy);cursor:pointer;"><input type="checkbox" checked> Documentos (2)</label>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="search-result-item" onclick="showPage('servicos')">
+          <div class="result-type">Serviço</div>
+          <h3><mark>Crédito Pessoal</mark> MALUA</h3>
+          <p>De 500 MT a 30.000 MT, com prazos de 12 a 84 meses. Aprovação rápida para membros com conta ativa. Taxa a partir de 3,2% TAEG.</p>
+        </div>
+        <div class="search-result-item" onclick="showPage('simuladores')">
+          <div class="result-type">Ferramenta</div>
+          <h3>Simulador de <mark>Crédito Pessoal</mark></h3>
+          <p>Simule a sua prestação mensal e o custo total do crédito de forma rápida e sem compromisso.</p>
+        </div>
+        <div class="search-result-item" onclick="showPage('faq')">
+          <div class="result-type">FAQ</div>
+          <h3>Como funciona o pedido de <mark>crédito pessoal</mark>?</h3>
+          <p>Pode iniciar o pedido online, na app ou presencialmente. Precisará de comprovativos de rendimentos dos últimos 3 meses…</p>
+        </div>
+        <div class="search-result-item" onclick="showPage('documentos')">
+          <div class="result-type">Documento</div>
+          <h3>Formulário de Pedido de <mark>Crédito Pessoal</mark></h3>
+          <p>Formulário editável para entrega presencial ou por email. Formato DOCX — 128 KB</p>
+        </div>
+        <div class="search-result-item" onclick="showPage('documentos')">
+          <div class="result-type">Documento</div>
+          <h3>Regulamento Interno de Crédito</h3>
+          <p>Normas e critérios de análise e concessão de <mark>crédito</mark> da cooperativa. PDF — 1,2 MB</p>
+        </div>
+        <div class="search-result-item" onclick="showPage('noticias')">
+          <div class="result-type">Notícia</div>
+          <h3>Promoção de Fevereiro: taxa reduzida no <mark>crédito pessoal</mark></h3>
+          <p>MALUA lança campanha de crédito com TAEG especial de 3,2% para créditos aprovados até 28/02/2026.</p>
+        </div>
+        <div class="search-result-item" onclick="showPage('faq')">
+          <div class="result-type">FAQ</div>
+          <h3>Quais os documentos necessários para pedir <mark>crédito</mark>?</h3>
+          <p>Documento de identificação, comprovativo de morada, últimos 3 recibos de vencimento ou declaração do IRPS…</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer style="background:var(--navy);color:white;padding:30px 80px;text-align:center;">
+    <p style="font-size:13px;color:rgba(255,255,255,0.35);">© 2026 MALUA — CPC · Cooperativa de Poupança e Crédito</p>
+  </footer>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     PAGE: EVENTOS
+══════════════════════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════════════════
+     PAGE: EVENTOS
+══════════════════════════════════════════════════════════ -->
+<div id="page-eventos" class="page">
+  <div class="page-header">
+    <div class="page-header-pattern"></div>
+    <div class="page-header-inner">
+      <div class="breadcrumb"><a onclick="showPage('home')">Início</a> <span>›</span> <span>Eventos</span></div>
+      <h1>Eventos & <em>Agenda</em></h1>
+      <p>Fique a par das iniciativas, formações e encontros da comunidade MALUA CPC.</p>
+    </div>
+  </div>
+
+  <div class="section" style="background:var(--cream);">
+
+    <!-- Evento destaque -->
+    <div style="border-radius:24px;overflow:hidden;margin-bottom:56px;display:grid;grid-template-columns:1fr 420px;min-height:320px;box-shadow:0 24px 60px rgba(0,36,76,0.15);">
+      <div style="position:relative;overflow:hidden;">
+        <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=900&q=80&auto=format&fit=crop" alt="Assembleia Geral" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;inset:0;background:linear-gradient(to right,rgba(0,36,76,0.7) 0%,transparent 100%);"></div>
+        <div style="position:absolute;inset:0;padding:40px;display:flex;flex-direction:column;justify-content:flex-end;">
+          <span style="background:var(--red);color:white;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 14px;border-radius:20px;width:fit-content;margin-bottom:16px;">Em destaque</span>
+          <h2 style="font-family:'DM Serif Display',serif;font-size:clamp(24px,3vw,38px);font-weight:400;color:white;line-height:1.2;margin-bottom:12px;">Assembleia Geral Ordinária <em style="color:rgba(201,168,76,0.95);">2026</em></h2>
+          <p style="font-size:15px;color:rgba(255,255,255,0.75);line-height:1.7;max-width:480px;margin-bottom:24px;">Reunião anual de todos os membros cooperadores para aprovação de contas e eleição de corpos sociais.</p>
+          <div style="display:flex;gap:20px;flex-wrap:wrap;">
+            <div style="display:flex;align-items:center;gap:7px;font-size:13px;color:rgba(255,255,255,0.85);">📅 <span>28 Março 2026 — 10h00</span></div>
+            <div style="display:flex;align-items:center;gap:7px;font-size:13px;color:rgba(255,255,255,0.85);">📍 <span>Centro FACIM, Maputo</span></div>
+          </div>
+        </div>
+      </div>
+      <div style="background:var(--navy);padding:40px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;">
+        <div style="font-size:12px;color:rgba(255,255,255,0.45);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;">Março 2026</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:88px;color:var(--gold);line-height:1;">28</div>
+        <div style="font-size:15px;color:rgba(255,255,255,0.55);margin-top:4px;margin-bottom:32px;">Sábado · 10h00</div>
+        <button class="btn-primary" style="background:var(--red);width:100%;padding:14px;" onclick="showPage('contacto')">Confirmar Presença</button>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:16px;font-size:13px;color:rgba(255,255,255,0.45);">👥 Membros cooperadores</div>
+      </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="doc-filters" style="margin-bottom:40px;">
+      <button class="filter-btn active">Todos</button>
+      <button class="filter-btn">Assembleias</button>
+      <button class="filter-btn">Formação</button>
+      <button class="filter-btn">Comunidade</button>
+      <button class="filter-btn">Passados</button>
+    </div>
+
+    <!-- Grid eventos -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;" class="eventos-grid">
+
+      <!-- Ev 1 -->
+      <div style="background:white;border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all 0.3s;cursor:pointer;" onmouseover="this.style.boxShadow='0 16px 48px rgba(0,36,76,0.12)';this.style.transform='translateY(-4px)'" onmouseout="this.style.boxShadow='none';this.style.transform='none'">
+        <div style="position:relative;height:180px;overflow:hidden;">
+          <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&q=80&auto=format&fit=crop" alt="Workshop" style="width:100%;height:100%;object-fit:cover;">
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.45) 0%,transparent 60%);"></div>
+          <span style="position:absolute;top:14px;left:14px;background:var(--red);color:white;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:20px;">Formação</span>
+          <span style="position:absolute;bottom:12px;right:14px;background:white;color:var(--navy);font-size:11px;font-weight:700;padding:4px 10px;border-radius:8px;">15 Abr</span>
+        </div>
+        <div style="padding:22px;">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">15 Abril 2026 · 14h00–17h00</div>
+          <h3 style="font-family:'DM Serif Display',serif;font-size:18px;color:var(--navy);font-weight:400;margin-bottom:10px;line-height:1.3;">Workshop de Literacia Financeira para Jovens</h3>
+          <p style="font-size:13.5px;color:var(--muted);line-height:1.6;margin-bottom:16px;">Sessão prática sobre poupança, crédito responsável e gestão do orçamento familiar.</p>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="font-size:12px;color:var(--muted);">📍 Sede MALUA, Maputo</div>
+            <span style="background:rgba(21,128,61,0.1);color:#15803d;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;">Inscrições abertas</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ev 2 -->
+      <div style="background:white;border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all 0.3s;cursor:pointer;" onmouseover="this.style.boxShadow='0 16px 48px rgba(0,36,76,0.12)';this.style.transform='translateY(-4px)'" onmouseout="this.style.boxShadow='none';this.style.transform='none'">
+        <div style="position:relative;height:180px;overflow:hidden;">
+          <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=600&q=80&auto=format&fit=crop" alt="Celebração" style="width:100%;height:100%;object-fit:cover;">
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.45) 0%,transparent 60%);"></div>
+          <span style="position:absolute;top:14px;left:14px;background:rgba(201,168,76,0.95);color:#5c3d00;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:20px;">Comunidade</span>
+          <span style="position:absolute;bottom:12px;right:14px;background:white;color:var(--navy);font-size:11px;font-weight:700;padding:4px 10px;border-radius:8px;">3 Mai</span>
+        </div>
+        <div style="padding:22px;">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">3 Maio 2026 · 09h00–13h00</div>
+          <h3 style="font-family:'DM Serif Display',serif;font-size:18px;color:var(--navy);font-weight:400;margin-bottom:10px;line-height:1.3;">Dia do Cooperador — Encontro Anual de Membros</h3>
+          <p style="font-size:13.5px;color:var(--muted);line-height:1.6;margin-bottom:16px;">Celebração do Dia Internacional do Cooperativismo com atividades para toda a família.</p>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="font-size:12px;color:var(--muted);">📍 Jardim dos Professores</div>
+            <span style="background:rgba(21,128,61,0.1);color:#15803d;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;">Entrada livre</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ev 3 -->
+      <div style="background:white;border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all 0.3s;cursor:pointer;" onmouseover="this.style.boxShadow='0 16px 48px rgba(0,36,76,0.12)';this.style.transform='translateY(-4px)'" onmouseout="this.style.boxShadow='none';this.style.transform='none'">
+        <div style="position:relative;height:180px;overflow:hidden;">
+          <img src="https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=600&q=80&auto=format&fit=crop" alt="Seminário" style="width:100%;height:100%;object-fit:cover;">
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.45) 0%,transparent 60%);"></div>
+          <span style="position:absolute;top:14px;left:14px;background:var(--navy);color:white;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:20px;">Formação</span>
+          <span style="position:absolute;bottom:12px;right:14px;background:white;color:var(--navy);font-size:11px;font-weight:700;padding:4px 10px;border-radius:8px;">22 Mai</span>
+        </div>
+        <div style="padding:22px;">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">22 Maio 2026 · 09h00–12h30</div>
+          <h3 style="font-family:'DM Serif Display',serif;font-size:18px;color:var(--navy);font-weight:400;margin-bottom:10px;line-height:1.3;">Seminário sobre Crédito e Empreendedorismo</h3>
+          <p style="font-size:13.5px;color:var(--muted);line-height:1.6;margin-bottom:16px;">Como aceder ao crédito cooperativo para financiar o seu negócio. Casos práticos com especialistas.</p>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="font-size:12px;color:var(--muted);">📍 Hotel Cardoso, Maputo</div>
+            <span style="background:rgba(21,128,61,0.1);color:#15803d;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;">Inscrições abertas</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ev 4 -->
+      <div style="background:white;border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all 0.3s;cursor:pointer;" onmouseover="this.style.boxShadow='0 16px 48px rgba(0,36,76,0.12)';this.style.transform='translateY(-4px)'" onmouseout="this.style.boxShadow='none';this.style.transform='none'">
+        <div style="position:relative;height:180px;overflow:hidden;">
+          <img src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=600&q=80&auto=format&fit=crop" alt="Comunidade Beira" style="width:100%;height:100%;object-fit:cover;">
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.45) 0%,transparent 60%);"></div>
+          <span style="position:absolute;top:14px;left:14px;background:var(--red);color:white;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:20px;">Comunidade</span>
+          <span style="position:absolute;bottom:12px;right:14px;background:white;color:var(--navy);font-size:11px;font-weight:700;padding:4px 10px;border-radius:8px;">14 Jun</span>
+        </div>
+        <div style="padding:22px;">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">14 Junho 2026 · 10h00–16h00</div>
+          <h3 style="font-family:'DM Serif Display',serif;font-size:18px;color:var(--navy);font-weight:400;margin-bottom:10px;line-height:1.3;">Caravana MALUA na Beira — Delegação Centro</h3>
+          <p style="font-size:13.5px;color:var(--muted);line-height:1.6;margin-bottom:16px;">Atendimento presencial, abertura de contas e simulações de crédito para membros da região.</p>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="font-size:12px;color:var(--muted);">📍 Rua Serpa Pinto, Beira</div>
+            <span style="background:rgba(21,128,61,0.1);color:#15803d;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;">Entrada livre</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ev 5 passado -->
+      <div style="background:white;border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all 0.3s;cursor:pointer;opacity:0.72;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='0.72'">
+        <div style="position:relative;height:180px;overflow:hidden;">
+          <img src="https://images.unsplash.com/photo-1519671282429-b44b4e144a4b?w=600&q=80&auto=format&fit=crop" alt="Gala aniversário" style="width:100%;height:100%;object-fit:cover;filter:grayscale(40%);">
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.55) 0%,transparent 60%);"></div>
+          <span style="position:absolute;top:14px;left:14px;background:rgba(107,114,128,0.8);color:white;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:20px;">Passado</span>
+          <span style="position:absolute;bottom:12px;right:14px;background:rgba(255,255,255,0.85);color:var(--navy);font-size:11px;font-weight:700;padding:4px 10px;border-radius:8px;">14 Fev</span>
+        </div>
+        <div style="padding:22px;">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">14 Fevereiro 2026 · Encerrado</div>
+          <h3 style="font-family:'DM Serif Display',serif;font-size:18px;color:var(--navy);font-weight:400;margin-bottom:10px;line-height:1.3;">Gala dos 15 Anos MALUA CPC</h3>
+          <p style="font-size:13.5px;color:var(--muted);line-height:1.6;margin-bottom:16px;">Celebração com entrega de distinções a membros fundadores e apresentação dos planos 2026–2028.</p>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="font-size:12px;color:var(--muted);">📍 Hotel Polana, Maputo</div>
+            <span style="background:rgba(107,114,128,0.1);color:var(--muted);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;">Encerrado</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ev 6 passado -->
+      <div style="background:white;border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all 0.3s;cursor:pointer;opacity:0.72;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='0.72'">
+        <div style="position:relative;height:180px;overflow:hidden;">
+          <img src="https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=600&q=80&auto=format&fit=crop" alt="Assembleia" style="width:100%;height:100%;object-fit:cover;filter:grayscale(40%);">
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.55) 0%,transparent 60%);"></div>
+          <span style="position:absolute;top:14px;left:14px;background:rgba(107,114,128,0.8);color:white;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:20px;">Passado</span>
+          <span style="position:absolute;bottom:12px;right:14px;background:rgba(255,255,255,0.85);color:var(--navy);font-size:11px;font-weight:700;padding:4px 10px;border-radius:8px;">5 Nov</span>
+        </div>
+        <div style="padding:22px;">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">5 Novembro 2025 · Encerrado</div>
+          <h3 style="font-family:'DM Serif Display',serif;font-size:18px;color:var(--navy);font-weight:400;margin-bottom:10px;line-height:1.3;">Assembleia Geral Extraordinária — Novos Estatutos</h3>
+          <p style="font-size:13.5px;color:var(--muted);line-height:1.6;margin-bottom:16px;">Aprovação dos novos estatutos cooperativos e plano de expansão digital 2026–2028.</p>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="font-size:12px;color:var(--muted);">📍 Centro de Conferências FACIM</div>
+            <span style="background:rgba(107,114,128,0.1);color:var(--muted);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;">Encerrado</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Newsletter -->
+    <div style="margin-top:56px;background:white;border:1px solid var(--border);border-radius:20px;padding:40px;display:flex;gap:40px;align-items:center;flex-wrap:wrap;">
+      <div style="flex:1;min-width:260px;">
+        <div style="font-size:32px;margin-bottom:12px;">🔔</div>
+        <h3 style="font-family:'DM Serif Display',serif;font-size:24px;color:var(--navy);font-weight:400;margin-bottom:8px;">Receba alertas de eventos</h3>
+        <p style="font-size:14.5px;color:var(--muted);line-height:1.6;">Subscreva e seja o primeiro a saber das próximas iniciativas da MALUA CPC.</p>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;flex:1;min-width:280px;">
+        <input type="email" placeholder="O seu email" style="flex:1;min-width:200px;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:15px;outline:none;color:var(--text);">
+        <button class="btn-primary" style="white-space:nowrap;">Subscrever</button>
+      </div>
+    </div>
+  </div>
+
+  <footer style="background:var(--navy);color:white;padding:30px 80px;text-align:center;">
+    <p style="font-size:13px;color:rgba(255,255,255,0.35);">© 2026 MALUA — CPC · Cooperativa de Poupança e Crédito</p>
+  </footer>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     PAGE: GALERIA
+══════════════════════════════════════════════════════════ -->
+<div id="page-galeria" class="page">
+  <div class="page-header">
+    <div class="page-header-pattern"></div>
+    <div class="page-header-inner">
+      <div class="breadcrumb"><a onclick="showPage('home')">Início</a> <span>›</span> <span>Galeria</span></div>
+      <h1>Galeria de <em>Imagens</em></h1>
+      <p>Momentos que capturam a essência da nossa cooperativa — pessoas, eventos e comunidade.</p>
+    </div>
+  </div>
+
+  <div class="section">
+
+    <!-- Filtros galeria -->
+    <div class="doc-filters" style="margin-bottom:40px;">
+      <button class="filter-btn active" onclick="filterGal(this,'todos')">Todos</button>
+      <button class="filter-btn" onclick="filterGal(this,'eventos')">Eventos</button>
+      <button class="filter-btn" onclick="filterGal(this,'comunidade')">Comunidade</button>
+      <button class="filter-btn" onclick="filterGal(this,'instalacoes')">Instalações</button>
+      <button class="filter-btn" onclick="filterGal(this,'formacao')">Formação</button>
+    </div>
+
+    <!-- Lightbox -->
+    <div id="lightbox" onclick="closeLightbox()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.94);z-index:9999;align-items:center;justify-content:center;flex-direction:column;">
+      <button onclick="event.stopPropagation();closeLightbox()" style="position:absolute;top:20px;right:28px;background:rgba(255,255,255,0.1);border:none;color:white;width:44px;height:44px;border-radius:50%;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+      <div onclick="event.stopPropagation()" style="position:relative;width:min(880px,90vw);">
+        <img id="lb-img" src="" alt="" style="width:100%;border-radius:16px;display:block;max-height:75vh;object-fit:cover;">
+        <div id="lb-caption" style="color:rgba(255,255,255,0.65);font-size:14px;margin-top:16px;text-align:center;padding:0 20px;"></div>
+        <div id="lb-counter" style="color:rgba(255,255,255,0.35);font-size:12px;text-align:center;margin-top:6px;"></div>
+      </div>
+      <div style="display:flex;gap:16px;margin-top:24px;" onclick="event.stopPropagation()">
+        <button onclick="lbPrev()" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:white;padding:12px 28px;border-radius:10px;cursor:pointer;font-size:15px;font-family:'DM Sans',sans-serif;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">‹ Anterior</button>
+        <button onclick="lbNext()" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:white;padding:12px 28px;border-radius:10px;cursor:pointer;font-size:15px;font-family:'DM Sans',sans-serif;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">Próxima ›</button>
+      </div>
+    </div>
+
+    <!-- Masonry grid -->
+    <div id="galeria-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;grid-auto-rows:220px;">
+
+      <!-- Span 2x2 -->
+      <div class="gal-item" data-cat="eventos" data-idx="0" style="grid-column:span 2;grid-row:span 2;border-radius:16px;overflow:hidden;cursor:pointer;position:relative;group;" onclick="openLightbox(0)">
+        <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80&auto=format&fit=crop" alt="Assembleia Geral" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.65) 0%,transparent 50%);pointer-events:none;"></div>
+        <div style="position:absolute;bottom:20px;left:20px;right:20px;pointer-events:none;">
+          <span style="background:var(--red);color:white;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 10px;border-radius:20px;">Evento</span>
+          <p style="color:white;font-size:15px;font-weight:600;margin-top:8px;line-height:1.3;">Gala dos 15 Anos MALUA CPC · Fevereiro 2026</p>
+        </div>
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:52px;height:52px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;opacity:0;transition:opacity 0.3s;pointer-events:none;" class="lb-zoom">🔍</div>
+      </div>
+
+      <!-- 1x1 -->
+      <div class="gal-item" data-cat="comunidade" data-idx="1" style="border-radius:16px;overflow:hidden;cursor:pointer;position:relative;" onclick="openLightbox(1)">
+        <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=500&q=80&auto=format&fit=crop" alt="Comunidade" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.55) 0%,transparent 55%);pointer-events:none;"></div>
+        <div style="position:absolute;bottom:12px;left:14px;pointer-events:none;">
+          <span style="background:rgba(201,168,76,0.9);color:#5c3d00;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;">Comunidade</span>
+          <p style="color:white;font-size:12px;font-weight:600;margin-top:5px;">Dia do Cooperador 2025</p>
+        </div>
+      </div>
+
+      <!-- 1x1 -->
+      <div class="gal-item" data-cat="instalacoes" data-idx="2" style="border-radius:16px;overflow:hidden;cursor:pointer;position:relative;" onclick="openLightbox(2)">
+        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=500&q=80&auto=format&fit=crop" alt="Sede MALUA" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.55) 0%,transparent 55%);pointer-events:none;"></div>
+        <div style="position:absolute;bottom:12px;left:14px;pointer-events:none;">
+          <span style="background:var(--navy);color:white;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;">Instalações</span>
+          <p style="color:white;font-size:12px;font-weight:600;margin-top:5px;">Nova Sede — Maputo</p>
+        </div>
+      </div>
+
+      <!-- Span 2x1 -->
+      <div class="gal-item" data-cat="eventos" data-idx="3" style="grid-column:span 2;border-radius:16px;overflow:hidden;cursor:pointer;position:relative;" onclick="openLightbox(3)">
+        <img src="https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=800&q=80&auto=format&fit=crop" alt="Assembleia" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.6) 0%,transparent 50%);pointer-events:none;"></div>
+        <div style="position:absolute;bottom:16px;left:18px;right:18px;pointer-events:none;">
+          <span style="background:var(--navy);color:white;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;">Assembleia</span>
+          <p style="color:white;font-size:13px;font-weight:600;margin-top:6px;line-height:1.3;">Assembleia Geral 2025 — Participação Recorde</p>
+        </div>
+      </div>
+
+      <!-- 1x1 -->
+      <div class="gal-item" data-cat="formacao" data-idx="4" style="border-radius:16px;overflow:hidden;cursor:pointer;position:relative;" onclick="openLightbox(4)">
+        <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=500&q=80&auto=format&fit=crop" alt="Formação" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.55) 0%,transparent 55%);pointer-events:none;"></div>
+        <div style="position:absolute;bottom:12px;left:14px;pointer-events:none;">
+          <span style="background:var(--red);color:white;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;">Formação</span>
+          <p style="color:white;font-size:12px;font-weight:600;margin-top:5px;">Workshop Literacia Financeira</p>
+        </div>
+      </div>
+
+      <!-- 1x1 -->
+      <div class="gal-item" data-cat="comunidade" data-idx="5" style="border-radius:16px;overflow:hidden;cursor:pointer;position:relative;" onclick="openLightbox(5)">
+        <img src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=500&q=80&auto=format&fit=crop" alt="Caravana Nampula" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.55) 0%,transparent 55%);pointer-events:none;"></div>
+        <div style="position:absolute;bottom:12px;left:14px;pointer-events:none;">
+          <span style="background:rgba(201,168,76,0.9);color:#5c3d00;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;">Comunidade</span>
+          <p style="color:white;font-size:12px;font-weight:600;margin-top:5px;">Caravana Nampula 2025</p>
+        </div>
+      </div>
+
+      <!-- 1x1 -->
+      <div class="gal-item" data-cat="instalacoes" data-idx="6" style="border-radius:16px;overflow:hidden;cursor:pointer;position:relative;" onclick="openLightbox(6)">
+        <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=500&q=80&auto=format&fit=crop" alt="Atendimento" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.55) 0%,transparent 55%);pointer-events:none;"></div>
+        <div style="position:absolute;bottom:12px;left:14px;pointer-events:none;">
+          <span style="background:var(--navy);color:white;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;">Instalações</span>
+          <p style="color:white;font-size:12px;font-weight:600;margin-top:5px;">Balcão de Atendimento</p>
+        </div>
+      </div>
+
+      <!-- Span 2x1 -->
+      <div class="gal-item" data-cat="formacao" data-idx="7" style="grid-column:span 2;border-radius:16px;overflow:hidden;cursor:pointer;position:relative;" onclick="openLightbox(7)">
+        <img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=800&q=80&auto=format&fit=crop" alt="Programa jovens" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.6) 0%,transparent 50%);pointer-events:none;"></div>
+        <div style="position:absolute;bottom:16px;left:18px;right:18px;pointer-events:none;">
+          <span style="background:var(--red);color:white;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;">Formação</span>
+          <p style="color:white;font-size:13px;font-weight:600;margin-top:6px;">Programa de Jovens Empreendedores — 800 participantes em 2025</p>
+        </div>
+      </div>
+
+      <!-- 1x1 -->
+      <div class="gal-item" data-cat="comunidade" data-idx="8" style="border-radius:16px;overflow:hidden;cursor:pointer;position:relative;" onclick="openLightbox(8)">
+        <img src="https://images.unsplash.com/photo-1587614382346-4ec70e388b28?w=500&q=80&auto=format&fit=crop" alt="Família cooperadora" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.55) 0%,transparent 55%);pointer-events:none;"></div>
+        <div style="position:absolute;bottom:12px;left:14px;pointer-events:none;">
+          <span style="background:rgba(201,168,76,0.9);color:#5c3d00;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;">Comunidade</span>
+          <p style="color:white;font-size:12px;font-weight:600;margin-top:5px;">Membros Cooperadores — Tete</p>
+        </div>
+      </div>
+
+      <!-- 1x1 -->
+      <div class="gal-item" data-cat="eventos" data-idx="9" style="border-radius:16px;overflow:hidden;cursor:pointer;position:relative;" onclick="openLightbox(9)">
+        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&q=80&auto=format&fit=crop" alt="Prémio" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.55) 0%,transparent 55%);pointer-events:none;"></div>
+        <div style="position:absolute;bottom:12px;left:14px;pointer-events:none;">
+          <span style="background:var(--navy);color:white;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;">Prémio</span>
+          <p style="color:white;font-size:12px;font-weight:600;margin-top:5px;">Cooperativa do Ano 2024</p>
+        </div>
+      </div>
+
+      <!-- 1x1 -->
+      <div class="gal-item" data-cat="instalacoes" data-idx="10" style="border-radius:16px;overflow:hidden;cursor:pointer;position:relative;" onclick="openLightbox(10)">
+        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&q=80&auto=format&fit=crop" alt="Centro digital" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.55) 0%,transparent 55%);pointer-events:none;"></div>
+        <div style="position:absolute;bottom:12px;left:14px;pointer-events:none;">
+          <span style="background:var(--navy);color:white;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;">Instalações</span>
+          <p style="color:white;font-size:12px;font-weight:600;margin-top:5px;">Centro Digital MALUA</p>
+        </div>
+      </div>
+
+      <!-- Span 2x1 -->
+      <div class="gal-item" data-cat="comunidade" data-idx="11" style="grid-column:span 2;border-radius:16px;overflow:hidden;cursor:pointer;position:relative;" onclick="openLightbox(11)">
+        <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&q=80&auto=format&fit=crop" alt="Apoio à comunidade" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.6) 0%,transparent 50%);pointer-events:none;"></div>
+        <div style="position:absolute;bottom:16px;left:18px;right:18px;pointer-events:none;">
+          <span style="background:rgba(201,168,76,0.9);color:#5c3d00;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;">Comunidade</span>
+          <p style="color:white;font-size:13px;font-weight:600;margin-top:6px;">Programa de Apoio Social — Parceria com Escolas Locais · 2025</p>
+        </div>
+      </div>
+
+    </div><!-- end grid -->
+
+    <!-- Load more -->
+    <div style="text-align:center;margin-top:48px;">
+      <button class="btn-secondary" style="padding:14px 40px;" onclick="this.textContent='A carregar…';setTimeout(()=>this.textContent='Carregar mais imagens',1800)">Carregar mais imagens</button>
+    </div>
+  </div>
+
+  <footer style="background:var(--navy);color:white;padding:30px 80px;text-align:center;">
+    <p style="font-size:13px;color:rgba(255,255,255,0.35);">© 2026 MALUA — CPC · Cooperativa de Poupança e Crédito</p>
+  </footer>
+</div>
+
+<script>
+// ─── Navigation ───
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  const navEl = document.getElementById('nav-' + id);
+  if (navEl) navEl.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ─── Nav scroll ───
+window.addEventListener('scroll', () => {
+  document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 10);
+});
+
+// ─── Simulator tabs ───
+function switchSim(btn, id) {
+  btn.closest('.sim-tabs').querySelectorAll('.sim-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.sim-content').forEach(c => c.style.display = 'none');
+  document.getElementById(id).style.display = 'block';
+}
+
+// ─── Loan Calculator ───
+function calcCredito() {
+  const montanteEl = document.querySelector('#sim-credito input[type="range"]:first-of-type');
+  const prazoEl = document.querySelectorAll('#sim-credito input[type="range"]')[1];
+  const taxaEl = document.getElementById('sel-taxa');
+  if (!montanteEl) return;
+  const P = parseFloat(montanteEl.value);
+  const n = parseInt(prazoEl.value);
+  const r = parseFloat(taxaEl.value) / 100 / 12;
+  const pmt = P * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
+  const total = pmt * n;
+  const fmt = v => v.toLocaleString('pt-PT', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' MT';
+  document.getElementById('res-prestacao').textContent = fmt(pmt);
+  document.getElementById('res-montante').textContent = fmt(P);
+  document.getElementById('res-prazo').textContent = n + ' meses';
+  document.getElementById('res-tan').textContent = parseFloat(taxaEl.value).toFixed(1) + '%';
+  document.getElementById('res-taeg').textContent = (parseFloat(taxaEl.value) + 0.9).toFixed(1) + '%';
+  document.getElementById('res-total').textContent = fmt(total);
+  document.getElementById('res-custo').textContent = fmt(total - P);
+}
+
+// ─── FAQ toggle ───
+document.querySelectorAll('.faq-question').forEach(q => {
+  q.onclick = function() { this.closest('.faq-item').classList.toggle('open'); };
+});
+
+// ─── Filter buttons (generic) ───
+document.querySelectorAll('.doc-filters').forEach(group => {
+  group.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.onclick = function() {
+      this.closest('.doc-filters').querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+    };
+  });
+});
+
+// ─── Galeria filter ───
+function filterGal(btn, cat) {
+  document.querySelectorAll('#galeria-grid .gal-item').forEach(item => {
+    const match = cat === 'todos' || item.dataset.cat === cat;
+    item.style.opacity = match ? '1' : '0.15';
+    item.style.pointerEvents = match ? '' : 'none';
+  });
+}
+
+// ─── Lightbox ───
+const lbImages = [
+  {src:'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&q=90&auto=format&fit=crop', caption:'Gala dos 15 Anos MALUA CPC · Hotel Polana, Maputo · Fevereiro 2026'},
+  {src:'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1200&q=90&auto=format&fit=crop', caption:'Dia do Cooperador · Jardim dos Professores, Maputo · 2025'},
+  {src:'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=90&auto=format&fit=crop', caption:'Nova Sede MALUA CPC · Maputo · Inauguração 2024'},
+  {src:'https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=1200&q=90&auto=format&fit=crop', caption:'Assembleia Geral Ordinária 2025 · Centro de Conferências FACIM'},
+  {src:'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1200&q=90&auto=format&fit=crop', caption:'Workshop de Literacia Financeira · Sede MALUA · Março 2025'},
+  {src:'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=1200&q=90&auto=format&fit=crop', caption:'Caravana MALUA em Nampula · Delegação Norte · 2025'},
+  {src:'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&q=90&auto=format&fit=crop', caption:'Balcão de Atendimento — Sede MALUA CPC'},
+  {src:'https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=1200&q=90&auto=format&fit=crop', caption:'Programa de Jovens Empreendedores · 800 participantes em 2025'},
+  {src:'https://images.unsplash.com/photo-1587614382346-4ec70e388b28?w=1200&q=90&auto=format&fit=crop', caption:'Membros Cooperadores — Delegação de Tete · 2025'},
+  {src:'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&q=90&auto=format&fit=crop', caption:'Prémio Cooperativa do Ano · Fórum do Cooperativismo Moçambicano · 2024'},
+  {src:'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&q=90&auto=format&fit=crop', caption:'Centro Digital MALUA · Inauguração do Espaço de Atendimento Digital'},
+  {src:'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=1200&q=90&auto=format&fit=crop', caption:'Programa de Apoio Social · Parceria com Escolas Locais · 2025'},
+];
+let lbIdx = 0;
+
+function openLightbox(idx) {
+  lbIdx = idx;
+  renderLb();
+  const lb = document.getElementById('lightbox');
+  lb.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function renderLb() {
+  const d = lbImages[lbIdx];
+  document.getElementById('lb-img').src = d.src;
+  document.getElementById('lb-caption').textContent = d.caption;
+  document.getElementById('lb-counter').textContent = (lbIdx + 1) + ' / ' + lbImages.length;
+}
+function closeLightbox() {
+  document.getElementById('lightbox').style.display = 'none';
+  document.body.style.overflow = '';
+}
+function lbNext() { lbIdx = (lbIdx + 1) % lbImages.length; renderLb(); }
+function lbPrev() { lbIdx = (lbIdx - 1 + lbImages.length) % lbImages.length; renderLb(); }
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowRight') lbNext();
+  if (e.key === 'ArrowLeft') lbPrev();
+});
+
+// Init
+calcCredito();
+
+
+// ─── Câmbio simples ───
+const cRates = { EUR:{mid:64.82,buy:64.18,sell:65.46,trend:+0.42}, USD:{mid:59.15,buy:58.60,sell:59.70,trend:-0.18}, ZAR:{mid:3.24,buy:3.21,sell:3.27,trend:+0.67}, MZN:{mid:1,buy:1,sell:1,trend:0} };
+
+function updateCambio() {
+  const now = new Date();
+  const t = document.getElementById('cambio-time');
+  if (t) t.textContent = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+  ['EUR','USD','ZAR'].forEach(c => {
+    const r = cRates[c];
+    const el = document.getElementById('rate-'+c);
+    if (el) el.innerHTML = r.mid.toFixed(2) + ' <span style="font-size:14px;color:var(--muted);">MZN</span>';
+    const b = document.getElementById('buy-'+c); if (b) b.textContent = r.buy.toFixed(2);
+    const s = document.getElementById('sell-'+c); if (s) s.textContent = r.sell.toFixed(2);
+    const tr = document.getElementById('trend-'+c);
+    if (tr) { tr.textContent = (r.trend>=0?'▲ +':'▼ ')+Math.abs(r.trend).toFixed(2)+'%'; tr.style.color = r.trend>=0?'#16a34a':'#dc2626'; }
+  });
+  convertCambio();
+}
+
+function convertCambio() {
+  const from = (document.getElementById('conv-from')||{}).value || 'EUR';
+  const to   = (document.getElementById('conv-to')||{}).value   || 'MZN';
+  const amt  = parseFloat((document.getElementById('conv-amount')||{}).value) || 0;
+  const rate = cRates[from].mid / cRates[to].mid;
+  const res  = document.getElementById('conv-result');
+  const inf  = document.getElementById('conv-rate-info');
+  if (res) res.textContent = '= ' + (amt * rate).toLocaleString('pt-PT',{minimumFractionDigits:2,maximumFractionDigits:2});
+  if (inf) inf.textContent = '1 ' + from + ' = ' + rate.toFixed(4) + ' ' + to;
+}
+
+updateCambio();
+setInterval(updateCambio, 60000);
+// ─── fim Câmbio ───
+
+</script>
+</body>
+</html>
